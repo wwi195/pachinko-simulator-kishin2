@@ -30,6 +30,9 @@ const game = {
   rushEntryBonus: null,
   pending: {},
   eigyoAlertShown: false,
+  enzokuMissStreak: 0,   // 先バレはずれの連続回数
+  tanpatsuStreak: 0,     // 単発の連続回数
+  lastChainSpins: 0,     // 最後に2連以上したRUSH終了時の通常時総回転数
   log: [],
 };
 
@@ -153,8 +156,9 @@ function autoSpin(count) {
 
 function handleEnzokuJudge() {
   if (game.pending.type === 'hit') {
+    game.enzokuMissStreak = 0;
     resolveNormalHit(game.pending.interval);
-  } else if (rollHakugeiOnFalseEnzoku()) {
+  } else if ((game.enzokuMissStreak++, rollHakugeiOnFalseEnzoku())) {
     addLog('3000白鯨戦 突入！', 'rush');
     setState('hakugei');
   } else {
@@ -182,6 +186,7 @@ function handleRushEntryJudge() {
     setState('rush_entry_win');
   } else {
     game.normalHitCounts.single++;
+    game.tanpatsuStreak++;
     addLog(`${RUSH_NAME}突入ならず…`);
     setState('rush_entry_lose');
   }
@@ -268,6 +273,13 @@ function runRushSpin(opts = {}) {
   }
 
   if (outcome === 'st_end') {
+    // 1連で終われば単発、2連以上なら単発カウントとハマり起点をリセット
+    if (game.rush.chainCount === 0) {
+      game.tanpatsuStreak++;
+    } else {
+      game.tanpatsuStreak = 0;
+      game.lastChainSpins = game.totalSpins;
+    }
     addLog('ST終了 → RUSHリザルトへ');
     setState('rush_result');
     return true;
@@ -363,6 +375,9 @@ function resetGame() {
   game.rushEntryBonus  = null;
   game.pending         = {};
   game.eigyoAlertShown = false;
+  game.enzokuMissStreak = 0;
+  game.tanpatsuStreak  = 0;
+  game.lastChainSpins  = 0;
   game.log             = [];
   render();
 }
@@ -465,6 +480,59 @@ function buildNormalIdleScreen(interactive) {
   </div>`;
 }
 
+// ---- 出現率の表示 ----
+function pctText(prob) {
+  const pct = prob * 100;
+  return pct >= 1 ? pct.toFixed(1) : pct >= 0.01 ? pct.toFixed(2) : pct.toPrecision(2);
+}
+function rareText(prob) {
+  return prob * 100 < 1 ? `<br>約${Math.round(1 / prob).toLocaleString()}回に1回の割合です` : '';
+}
+function rareNote(html) {
+  return `<p class="rare-note">${html}</p>`;
+}
+
+// 初当たりのハマり：1000回転超・100回転未満は出現率を表示
+function hitIntervalProbHtml(n) {
+  if (n > 1000) {
+    const p = hitIntervalProbability(n).atLeast;
+    return rareNote(`${n.toLocaleString()}回転以上ハマる確率 ${pctText(p)}%${rareText(p)}`);
+  }
+  if (n < 100) {
+    const p = hitIntervalProbability(n).within;
+    return rareNote(`${n}回転以内に当たる確率 ${pctText(p)}%${rareText(p)}`);
+  }
+  return '';
+}
+
+// 先バレはずれの連続（5回連続目から）
+const ENZOKU_MISS_NOTICE_MIN = 5;
+function enzokuMissNoticeHtml() {
+  const n = game.enzokuMissStreak;
+  if (n < ENZOKU_MISS_NOTICE_MIN) return '';
+  const p = Math.pow(1 - ENZOKU_CONFIDENCE / 100, n);
+  return rareNote(`先バレはずれ　${n}回連続中<br>発生率 ${pctText(p)}%${rareText(p)}`);
+}
+
+// 単発の連続（7回連続目から）＋前回の連チャンからのハマり
+const TANPATSU_NOTICE_MIN = 7;
+function tanpatsuNoticeHtml() {
+  const n = game.tanpatsuStreak;
+  if (n < TANPATSU_NOTICE_MIN) return '';
+  const p = Math.pow(P_TANPATSU, n);
+  const hamari = game.totalSpins - game.lastChainSpins;
+  return rareNote(`単発　${n}回連続中<br>発生率 ${pctText(p)}%${rareText(p)}<br>前回の連チャンから ${hamari.toLocaleString()}回転ハマり`);
+}
+
+// RUSHリザルトの連チャン分布
+function chainProbRowHtml(label, prob) {
+  const rare = prob * 100 < 1 ? `<p class="rr-rare">約${Math.round(1 / prob).toLocaleString()}回に1回の割合です</p>` : '';
+  return `<div class="result-row">
+      <span class="rr-label">${label}</span>
+      <span class="rr-val">${pctText(prob)}%</span>
+    </div>${rare}`;
+}
+
 function resultRow(label, count) {
   return `<div class="result-row">
     <span class="rr-label">${label}</span>
@@ -490,6 +558,7 @@ function buildScreen(state) {
       return `<div class="screen">
         ${game.pending.hakugei === 'lose' ? '<p class="result-main lose" style="font-size:22px;">白鯨戦 敗北…</p>' : ''}
         <p class="result-main lose">はずれ</p>
+        ${enzokuMissNoticeHtml()}
         <button class="btn-sub" onclick="backToNormal()" style="margin-top:8px;">続ける</button>
       </div>`;
 
@@ -503,6 +572,7 @@ function buildScreen(state) {
     case 'normal_hit_result':
       return `<div class="screen">
         <p class="hit-interval"><span>${game.pending.interval.toLocaleString()}</span>回転</p>
+        ${hitIntervalProbHtml(game.pending.interval)}
         <div class="vibun-box">
           <p class="bonus-main standard">${BONUS_LABELS.b1500}</p>
           <p class="bonus-sub">＋${NORMAL_HIT_TYPES.b1500.actual.toLocaleString()}球獲得</p>
@@ -514,6 +584,7 @@ function buildScreen(state) {
       return `<div class="screen">
         ${game.pending.hakugei === 'win' ? '<p class="hakugei-win">白鯨戦 勝利！</p>' : ''}
         <p class="hit-interval"><span>${game.pending.interval.toLocaleString()}</span>回転</p>
+        ${hitIntervalProbHtml(game.pending.interval)}
         <p class="add-rush-title">${RUSH_NAME}直行！</p>
         <div class="vibun-box rush-box">
           <p class="bonus-main premium">${BONUS_LABELS.b3000}</p>
@@ -539,6 +610,7 @@ function buildScreen(state) {
     case 'rush_entry_lose':
       return `<div class="screen">
         <p class="result-main lose" style="font-size:26px;">${RUSH_NAME}突入ならず…</p>
+        ${tanpatsuNoticeHtml()}
         <button class="btn-sub" onclick="handleAfterRushEntry()" style="margin-top:12px;">続ける</button>
       </div>`;
 
@@ -597,6 +669,7 @@ function buildScreen(state) {
       const totalActual  = s.actualBalls  + (bonus ? bonus.actual  : 0);
       const totalNominal = s.nominalBalls + (bonus ? bonus.nominal : 0);
       const totalHits    = s.chainCount + (bonus ? 1 : 0);
+      const dist         = chainProbability(totalHits);
 
       return `<div class="screen">
         <p class="rush-result-title">RUSH リザルト</p>
@@ -614,9 +687,14 @@ function buildScreen(state) {
             <span class="rr-val">${totalNominal.toLocaleString()}個</span>
           </div>
           <hr class="result-hr">
+          <p class="rr-section">連チャン分布（ST当選率 ${(P_ST_HIT * 100).toFixed(1)}%）</p>
+          ${chainProbRowHtml(`${totalHits}連で終わる確率`, dist.exact)}
+          ${chainProbRowHtml(`${totalHits}連以上に届く確率`, dist.atLeast)}
+          <hr class="result-hr">
           <p class="rr-section">ボーナス内訳</p>
           ${lines.join('')}
         </div>
+        ${tanpatsuNoticeHtml()}
         <button class="btn-action" onclick="handleRushResultEnd()" style="margin-top:16px;">▶ 通常へ戻る</button>
       </div>`;
     }

@@ -708,3 +708,7 @@ body {
   -webkit-text-stroke: 1px #6a3a00;
   filter: drop-shadow(0 0 6px rgba(255, 210, 60, 0.9));
 }
+
+/* 出現率・希少性の表示 */
+.rare-note { margin: 4px 0 0; text-align: center; font-size: 12px; font-weight: bold; line-height: 1.6; color: #c9a227; }
+.rr-rare { margin: 0 0 4px; text-align: right; font-size: 12px; font-weight: bold; color: #c9a227; }

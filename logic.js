@@ -124,6 +124,30 @@ function applyRushSpin(rushState) {
   return { rushState: newState, outcome: 'hit_' + hitType };
 }
 
+// ---- 出現率の計算 ----
+
+// 通常時：n回転目で当たった時の出現率
+function hitIntervalProbability(n) {
+  return {
+    atLeast: Math.pow(1 - P_HIT, n - 1),   // n回転以上ハマる確率
+    within: 1 - Math.pow(1 - P_HIT, n),    // n回転以内に当たる確率
+  };
+}
+
+// ST144回中に1回以上当たる確率（約76.5%）
+const P_ST_HIT = 1 - Math.pow(1 - P_RUSH, RUSH_ST_COUNT);
+
+// RUSHのN連(初当たり込み)：ST中の当たりk=N-1回。exact=q^k(1-q)、atLeast=q^k
+function chainProbability(totalChain) {
+  const k = Math.max(0, totalChain - 1);
+  const atLeast = Math.pow(P_ST_HIT, k);
+  return { exact: atLeast * (1 - P_ST_HIT), atLeast };
+}
+
+// 単発：1500ボーナス後のRUSH突入ジャッジ失敗、またはRUSH突入後1連(ST中の当たりなし)で終了
+const P_RUSH_FROM_HIT = NORMAL_HIT_TYPES.b3000.weight + NORMAL_HIT_TYPES.b1500.weight * P_RUSH_ENTRY;
+const P_TANPATSU = (1 - P_RUSH_FROM_HIT) + P_RUSH_FROM_HIT * (1 - P_ST_HIT);
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     SPIN_RATE_OPTIONS,
@@ -149,5 +173,10 @@ if (typeof module !== 'undefined' && module.exports) {
     rollRushHitType,
     createRushState,
     applyRushSpin,
+    hitIntervalProbability,
+    P_ST_HIT,
+    chainProbability,
+    P_RUSH_FROM_HIT,
+    P_TANPATSU,
   };
 }

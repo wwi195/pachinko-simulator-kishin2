@@ -133,3 +133,10 @@ test('3000白鯨戦：3000ボーナス1回につきはずれ先バレ2回が白�
   assert.ok(Math.abs(win / (win + lose) - 1 / 3) < 1e-12);
   assert.ok(Math.abs(r - 0.2 / 1.5) < 1e-12);
 });
+
+test('出現率：ST当選率・連チャン分布・単発率', () => {
+  assert.ok(Math.abs(logic.P_ST_HIT - 0.7651) < 0.001);
+  assert.equal(logic.chainProbability(1).atLeast, 1);
+  assert.ok(Math.abs(logic.P_TANPATSU - (0.45 + 0.55 * (1 - logic.P_ST_HIT))) < 1e-12);
+  assert.ok(Math.abs(logic.hitIntervalProbability(1000).atLeast - Math.pow(1 - 1 / 349.9, 999)) < 1e-12);
+});

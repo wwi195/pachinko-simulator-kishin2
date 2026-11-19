@@ -1,6 +1,6 @@
 'use strict';
 
-const MACHINE_NAME = '鬼神ノ刻2';
+const MACHINE_NAME = 'リゼロ鬼がかり2';
 const RUSH_NAME = '鬼神RUSH';
 const ACCENT = '#1f5fd6';
 

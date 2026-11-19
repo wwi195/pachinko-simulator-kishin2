@@ -137,9 +137,9 @@ function applyNormalHit(hitType, interval) {
 
 function handleStart() {
   if (checkEigyoAlert()) return;
+  // 何も起きなかった回転は「はずれ」画面を出さず、通常画面のまま
   if (!runNormalSpin()) {
-    game.pending.hakugei = null;
-    setState('lose_result');
+    setState('normal_idle');
   }
 }
 

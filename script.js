@@ -1,7 +1,7 @@
 'use strict';
 
 const MACHINE_NAME = 'リゼロ鬼がかり2';
-const RUSH_NAME = '鬼神RUSH';
+const RUSH_NAME = 'RUSH';
 const ACCENT = '#1f5fd6';
 
 const BONUS_LABELS = {
@@ -94,12 +94,29 @@ function runNormalSpin() {
 
 function resolveNormalHit(interval) {
   const hitType = rollNormalHitType();
+  game.pending = { ...game.pending, interval, hitType };
+  if (rollHakugei(hitType)) {
+    addLog('3000白鯨戦 突入！', 'rush');
+    setState('hakugei');
+    return;
+  }
+  applyNormalHit(hitType, interval);
+}
+
+// 3000白鯨戦の勝敗（結果は当たり種別で確定済み）
+function handleHakugeiBattle() {
+  const { hitType, interval } = game.pending;
+  game.pending.hakugei = hitType === 'b3000' ? 'win' : 'lose';
+  addLog(hitType === 'b3000' ? '白鯨戦 勝利！' : '白鯨戦 敗北…', hitType === 'b3000' ? 'rush' : '');
+  applyNormalHit(hitType, interval);
+}
+
+function applyNormalHit(hitType, interval) {
   const bonus = NORMAL_HIT_TYPES[hitType];
   game.currentSpins = 0;
   game.lastHitSpins = game.totalSpins;
   game.lastHitToushi = game.toushi;
   addBalls(bonus.actual);
-  game.pending = { ...game.pending, interval, hitType };
   addLog(`${interval}回転で${BONUS_LABELS[hitType]} ＋${bonus.actual}球`, bonus.rushDirect ? 'rush' : 'win');
 
   if (bonus.rushDirect) {
@@ -173,6 +190,38 @@ function playFlash(callback) {
   }, 300);
 }
 
+// 6000ボーナス：画面の大部分をレインボーにし、巨大な「6000」がカウントアップして跳ねる。
+// タップか約2.8秒で結果画面へ。
+const RAINBOW_6000_MS = 2800;
+const RAINBOW_COUNT_MS = 900;
+function play6000Rainbow(callback) {
+  const el = document.getElementById('rainbow-6000');
+  const num = document.getElementById('rainbow-6000-num');
+  let done = false;
+  const finish = () => {
+    if (done) return;
+    done = true;
+    el.classList.remove('active');
+    el.onclick = null;
+    callback();
+  };
+  el.classList.add('active');
+  const start = performance.now();
+  const step = (now) => {
+    if (done) return;
+    const t = Math.min(1, (now - start) / RAINBOW_COUNT_MS);
+    const eased = 1 - Math.pow(1 - t, 3);
+    num.textContent = Math.round(6000 * eased).toLocaleString();
+    if (t < 1) requestAnimationFrame(step);
+    else num.classList.add('landed');
+  };
+  num.classList.remove('landed');
+  num.textContent = '0';
+  requestAnimationFrame(step);
+  setTimeout(() => { el.onclick = finish; }, RAINBOW_COUNT_MS);
+  setTimeout(finish, RAINBOW_6000_MS);
+}
+
 function enterRush(entryBonus = null) {
   game.mode = 'rush';
   game.rush = createRushState();
@@ -217,7 +266,7 @@ function runRushSpin(opts = {}) {
     addLog(`${BONUS_LABELS[hitType]}！ ＋${actual}球 (${rushState.chainCount}連)`, 'rush');
   }
   if (hitType === 'b6000') {
-    playFlash(() => setState('rush_hit_result'));
+    play6000Rainbow(() => setState('rush_hit_result'));
   } else {
     setState('rush_hit_result');
   }
@@ -423,8 +472,17 @@ function buildScreen(state) {
         <button class="btn-sub" onclick="backToNormal()" style="margin-top:8px;">続ける</button>
       </div>`;
 
+    case 'hakugei':
+      return `<div class="screen">
+        <p class="hakugei-title">3000白鯨戦</p>
+        <p class="result-sub">勝てば3000ボーナス＆${RUSH_NAME}直行 ／ 成功率 約33%</p>
+        <button class="btn-action hakugei-btn" onclick="handleHakugeiBattle()">▶ 勝負！</button>
+      </div>`;
+
     case 'normal_hit_result':
       return `<div class="screen">
+        ${game.pending.hakugei === 'lose' ? '<p class="result-main lose" style="font-size:22px;">白鯨戦 敗北…</p>' : ''}
+        <p class="hit-interval"><span>${game.pending.interval.toLocaleString()}</span>回転</p>
         <div class="vibun-box">
           <p class="bonus-main standard">${BONUS_LABELS.b1500}</p>
           <p class="bonus-sub">＋${NORMAL_HIT_TYPES.b1500.actual.toLocaleString()}球獲得</p>
@@ -434,6 +492,8 @@ function buildScreen(state) {
 
     case 'normal_hit_direct':
       return `<div class="screen">
+        ${game.pending.hakugei === 'win' ? '<p class="hakugei-win">白鯨戦 勝利！</p>' : ''}
+        <p class="hit-interval"><span>${game.pending.interval.toLocaleString()}</span>回転</p>
         <p class="add-rush-title">${RUSH_NAME}直行！</p>
         <div class="vibun-box rush-box">
           <p class="bonus-main premium">${BONUS_LABELS.b3000}</p>

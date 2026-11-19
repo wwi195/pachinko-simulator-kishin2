@@ -48,6 +48,15 @@ function rollNormalHitType() {
   return rollWeighted(NORMAL_HIT_TYPES, NORMAL_HIT_TYPE_ORDER);
 }
 
+// 3000白鯨戦：当たりの30%で発生し、成功(=3000ボーナス)は1/3(約33%)。
+// 3000ボーナス(当たりの10%)は必ず白鯨戦を経由し、1500ボーナスの2/9も白鯨戦(失敗)になる。
+const P_HAKUGEI_GIVEN_HIT = 0.30;
+function rollHakugei(hitType) {
+  if (hitType === 'b3000') return true;
+  const pGiven1500 = (P_HAKUGEI_GIVEN_HIT - NORMAL_HIT_TYPES.b3000.weight) / NORMAL_HIT_TYPES.b1500.weight;
+  return Math.random() < pGiven1500;
+}
+
 const P_RUSH_ENTRY = 0.5;
 
 function rollRushEntry() {
@@ -123,6 +132,8 @@ if (typeof module !== 'undefined' && module.exports) {
     NORMAL_HIT_TYPES,
     NORMAL_HIT_TYPE_ORDER,
     rollNormalHitType,
+    P_HAKUGEI_GIVEN_HIT,
+    rollHakugei,
     P_RUSH_ENTRY,
     rollRushEntry,
     P_RUSH,

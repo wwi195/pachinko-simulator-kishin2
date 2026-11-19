@@ -523,3 +523,81 @@ body {
 .log-item.win   { color: #b5872a; }
 .log-item.rush  { color: #1a4fbd; }
 .log-item.preview { color: #1f5fd6; }
+
+/* ---- 1500ボーナス等：ボーナス間回転数 ---- */
+.hit-interval { margin: 0 0 4px; text-align: center; font-size: 14px; color: #888; }
+.hit-interval span { font-size: 20px; font-weight: bold; color: #1f5fd6; }
+
+/* ---- 3000白鯨戦 ---- */
+.hakugei-title {
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #fff;
+  background: linear-gradient(180deg, #0d2a5c, #1f5fd6);
+  padding: 10px 24px;
+  border-radius: 10px;
+  text-shadow: 0 0 8px #9fd0ff, 0 2px 0 #000;
+  box-shadow: 0 0 18px rgba(31, 95, 214, 0.6);
+  animation: hakugei-pulse 1.2s ease-in-out infinite;
+}
+@keyframes hakugei-pulse { 50% { box-shadow: 0 0 30px rgba(120, 190, 255, 0.9); } }
+.hakugei-btn { background: linear-gradient(135deg, #0d2a5c, #1f5fd6); }
+.hakugei-win { font-size: 26px; font-weight: 900; color: #c9a227; text-shadow: 0 0 8px rgba(201,162,39,0.6); }
+
+/* ---- 6000ボーナス：レインボー ---- */
+#rainbow-6000 {
+  position: fixed;
+  inset: 4%;
+  z-index: 60;
+  border-radius: 18px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(120deg, #ff1744, #ff9100, #ffea00, #00e676, #00b0ff, #651fff, #d500f9, #ff1744);
+  background-size: 400% 400%;
+  box-shadow: 0 0 40px rgba(255,255,255,0.8), 0 0 0 9999px rgba(0,0,0,0.55);
+  animation: rainbow-6000-bg 1.6s linear infinite;
+  cursor: pointer;
+}
+#rainbow-6000.active { display: flex; }
+@keyframes rainbow-6000-bg {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 400% 50%; }
+}
+.rainbow-6000-inner { text-align: center; }
+.rainbow-6000-num {
+  font-size: min(30vw, 160px);
+  font-weight: 900;
+  font-style: italic;
+  line-height: 1;
+  color: #fff;
+  -webkit-text-stroke: 3px #1a1a1a;
+  text-shadow: 0 6px 0 rgba(0,0,0,0.35), 0 0 24px #fff;
+  animation: rainbow-6000-shake 0.12s linear infinite;
+}
+.rainbow-6000-num.landed {
+  animation: rainbow-6000-land 0.5s cubic-bezier(.2,1.6,.4,1) forwards, rainbow-6000-beat 0.6s ease-in-out 0.5s infinite;
+}
+@keyframes rainbow-6000-shake {
+  0% { transform: translate(0, 0) rotate(-2deg); }
+  50% { transform: translate(2px, -2px) rotate(2deg); }
+  100% { transform: translate(-2px, 1px) rotate(-1deg); }
+}
+@keyframes rainbow-6000-land {
+  0%   { transform: scale(1.8); }
+  100% { transform: scale(1); }
+}
+@keyframes rainbow-6000-beat {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.08); }
+}
+.rainbow-6000-label {
+  margin-top: 6px;
+  font-size: min(12vw, 56px);
+  font-weight: 900;
+  color: #fff;
+  -webkit-text-stroke: 2px #1a1a1a;
+  letter-spacing: 6px;
+  text-shadow: 0 4px 0 rgba(0,0,0,0.35);
+}

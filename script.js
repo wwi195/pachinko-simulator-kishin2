@@ -213,8 +213,8 @@ function playFlash(callback) {
 // 最後に金色の「鬼がかり」が上に降りてくる。タップ（最後まで出た後）か自動で結果画面へ。
 const R6_STAGES = ['6', '60', '600', '6000'];
 const R6_STAGE_MS = 240;
-const R6_ONI_DELAY_MS = 350;
-const R6_HOLD_MS = 1500;
+const R6_ONI_DELAY_MS = 700;
+const R6_HOLD_MS = 500;
 function play6000Rainbow(callback) {
   const el = document.getElementById('rainbow-6000');
   const num = document.getElementById('rainbow-6000-num');

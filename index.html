@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>パチンコシミュレーター（リゼロ鬼がかり2）</title>
-  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
   <div id="app">
@@ -102,6 +102,15 @@
       <div id="log-list"></div>
     </div>
 
+    <!-- 大当たり履歴グラフ：1ブロック=100回転、700回転以上は7ブロック＋▲。左が新しく、横スクロールで過去へ -->
+    <div id="hist-area">
+      <div class="hist-title"><span>大当たり履歴（1ブロック=100回転）</span><span>← 新しい ｜ 過去 →</span></div>
+      <div class="hist-body">
+        <div class="hist-axis"><span>0</span><span>100</span><span>200</span><span>300</span><span>400</span><span>500</span><span>600</span><span>700</span></div>
+        <div class="hist-scroll"><div class="hist-cols" id="hist-cols"></div></div>
+      </div>
+    </div>
+
     <!-- 6000ボーナス：レインボー演出 -->
     <div id="rainbow-6000">
       <div class="r6-rays"></div>
@@ -123,8 +132,8 @@
     </div>
 
   </div>
-  <script src="logic.js?v=7"></script>
-  <script src="script.js?v=7"></script>
+  <script src="logic.js?v=8"></script>
+  <script src="script.js?v=8"></script>
   <script src="https://wwi195.github.io/site-analytics/tracker.js?v=1" data-site-id="pachinko-simulator-kishin2"></script>
 </body>
 </html>

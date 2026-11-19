@@ -95,7 +95,8 @@ function runNormalSpin() {
 function resolveNormalHit(interval) {
   const hitType = rollNormalHitType();
   game.pending = { ...game.pending, interval, hitType };
-  if (rollHakugei(hitType)) {
+  // 3000ボーナスは必ず白鯨戦（勝利）を経由する
+  if (hitType === 'b3000') {
     addLog('3000白鯨戦 突入！', 'rush');
     setState('hakugei');
     return;
@@ -103,12 +104,17 @@ function resolveNormalHit(interval) {
   applyNormalHit(hitType, interval);
 }
 
-// 3000白鯨戦の勝敗（結果は当たり種別で確定済み）
+// 3000白鯨戦の勝敗（先バレの時点で確定済み：当たり=勝利、はずれ=敗北）
 function handleHakugeiBattle() {
-  const { hitType, interval } = game.pending;
-  game.pending.hakugei = hitType === 'b3000' ? 'win' : 'lose';
-  addLog(hitType === 'b3000' ? '白鯨戦 勝利！' : '白鯨戦 敗北…', hitType === 'b3000' ? 'rush' : '');
-  applyNormalHit(hitType, interval);
+  if (game.pending.type === 'hit') {
+    game.pending.hakugei = 'win';
+    addLog('白鯨戦 勝利！', 'rush');
+    applyNormalHit('b3000', game.pending.interval);
+  } else {
+    game.pending.hakugei = 'lose';
+    addLog('白鯨戦 敗北… はずれ');
+    setState('lose_result');
+  }
 }
 
 function applyNormalHit(hitType, interval) {
@@ -132,6 +138,7 @@ function applyNormalHit(hitType, interval) {
 function handleStart() {
   if (checkEigyoAlert()) return;
   if (!runNormalSpin()) {
+    game.pending.hakugei = null;
     setState('lose_result');
   }
 }
@@ -147,7 +154,11 @@ function autoSpin(count) {
 function handleEnzokuJudge() {
   if (game.pending.type === 'hit') {
     resolveNormalHit(game.pending.interval);
+  } else if (rollHakugeiOnFalseEnzoku()) {
+    addLog('3000白鯨戦 突入！', 'rush');
+    setState('hakugei');
   } else {
+    game.pending.hakugei = null;
     addLog('はずれ');
     setState('lose_result');
   }
@@ -468,6 +479,7 @@ function buildScreen(state) {
 
     case 'lose_result':
       return `<div class="screen">
+        ${game.pending.hakugei === 'lose' ? '<p class="result-main lose" style="font-size:22px;">白鯨戦 敗北…</p>' : ''}
         <p class="result-main lose">はずれ</p>
         <button class="btn-sub" onclick="backToNormal()" style="margin-top:8px;">続ける</button>
       </div>`;
@@ -481,7 +493,6 @@ function buildScreen(state) {
 
     case 'normal_hit_result':
       return `<div class="screen">
-        ${game.pending.hakugei === 'lose' ? '<p class="result-main lose" style="font-size:22px;">白鯨戦 敗北…</p>' : ''}
         <p class="hit-interval"><span>${game.pending.interval.toLocaleString()}</span>回転</p>
         <div class="vibun-box">
           <p class="bonus-main standard">${BONUS_LABELS.b1500}</p>

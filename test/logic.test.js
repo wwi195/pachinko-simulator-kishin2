@@ -126,17 +126,10 @@ test('applyRushSpin on a restart resets ST to 144, counts the hit, adds no balls
   assert.equal(rushState.nominalBalls, 0);
 });
 
-test('3000白鯨戦：当たりの30%で発生、成功率1/3', () => {
-  const orig = Math.random;
-  try {
-    let hak = 0, win = 0;
-    const N = 200000;
-    Math.random = orig;
-    for (let i = 0; i < N; i++) {
-      const t = logic.rollNormalHitType();
-      if (logic.rollHakugei(t)) { hak++; if (t === 'b3000') win++; }
-    }
-    assert.ok(Math.abs(hak / N - 0.30) < 0.005);
-    assert.ok(Math.abs(win / hak - 1 / 3) < 0.01);
-  } finally { Math.random = orig; }
+test('3000白鯨戦：3000ボーナス1回につきはずれ先バレ2回が白鯨戦（成功率1/3）', () => {
+  const r = logic.hakugeiRateGivenFalseEnzoku();
+  const win = logic.P_HIT * 0.10;
+  const lose = logic.falseEnzokuProbability() * r;
+  assert.ok(Math.abs(win / (win + lose) - 1 / 3) < 1e-12);
+  assert.ok(Math.abs(r - 0.2 / 1.5) < 1e-12);
 });

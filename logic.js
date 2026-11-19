@@ -48,13 +48,17 @@ function rollNormalHitType() {
   return rollWeighted(NORMAL_HIT_TYPES, NORMAL_HIT_TYPE_ORDER);
 }
 
-// 3000白鯨戦：当たりの30%で発生し、成功(=3000ボーナス)は1/3(約33%)。
-// 3000ボーナス(当たりの10%)は必ず白鯨戦を経由し、1500ボーナスの2/9も白鯨戦(失敗)になる。
-const P_HAKUGEI_GIVEN_HIT = 0.30;
-function rollHakugei(hitType) {
-  if (hitType === 'b3000') return true;
-  const pGiven1500 = (P_HAKUGEI_GIVEN_HIT - NORMAL_HIT_TYPES.b3000.weight) / NORMAL_HIT_TYPES.b1500.weight;
-  return Math.random() < pGiven1500;
+// 3000白鯨戦：先バレ発生時に突入。勝利=3000ボーナス(RUSH直行)、敗北=はずれ。
+// 成功率約33%になるよう、3000ボーナス1回につき、はずれ先バレ2回を白鯨戦(敗北)に回す。
+// はずれ先バレ(当たりの1.5倍)のうち白鯨戦になる割合 = 2×10% ÷ 150% ≒ 13.3%。
+const HAKUGEI_SUCCESS_RATE = 1 / 3;
+function hakugeiRateGivenFalseEnzoku() {
+  const pWin = P_HIT * NORMAL_HIT_TYPES.b3000.weight;
+  const pLose = pWin * (1 - HAKUGEI_SUCCESS_RATE) / HAKUGEI_SUCCESS_RATE;
+  return pLose / falseEnzokuProbability();
+}
+function rollHakugeiOnFalseEnzoku() {
+  return Math.random() < hakugeiRateGivenFalseEnzoku();
 }
 
 const P_RUSH_ENTRY = 0.5;
@@ -132,8 +136,9 @@ if (typeof module !== 'undefined' && module.exports) {
     NORMAL_HIT_TYPES,
     NORMAL_HIT_TYPE_ORDER,
     rollNormalHitType,
-    P_HAKUGEI_GIVEN_HIT,
-    rollHakugei,
+    HAKUGEI_SUCCESS_RATE,
+    hakugeiRateGivenFalseEnzoku,
+    rollHakugeiOnFalseEnzoku,
     P_RUSH_ENTRY,
     rollRushEntry,
     P_RUSH,

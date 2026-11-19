@@ -222,12 +222,13 @@ function play6000Rainbow(callback) {
     if (done) return;
     const t = Math.min(1, (now - start) / RAINBOW_COUNT_MS);
     const eased = 1 - Math.pow(1 - t, 3);
-    num.textContent = Math.round(6000 * eased).toLocaleString();
+    const text = Math.round(6000 * eased).toLocaleString();
+    num.querySelectorAll('span').forEach((sp) => { sp.textContent = text; });
     if (t < 1) requestAnimationFrame(step);
     else num.classList.add('landed');
   };
   num.classList.remove('landed');
-  num.textContent = '0';
+  num.querySelectorAll('span').forEach((sp) => { sp.textContent = '0'; });
   requestAnimationFrame(step);
   setTimeout(() => { el.onclick = finish; }, RAINBOW_COUNT_MS);
   setTimeout(finish, RAINBOW_6000_MS);

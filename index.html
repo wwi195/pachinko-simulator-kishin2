@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>パチンコシミュレーター（リゼロ鬼がかり2）</title>
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
   <div id="app">
@@ -104,9 +104,16 @@
 
     <!-- 6000ボーナス：レインボー演出 -->
     <div id="rainbow-6000">
-      <div class="rainbow-6000-inner">
-        <div class="rainbow-6000-num" id="rainbow-6000-num">6,000</div>
-        <div class="rainbow-6000-label">ボーナス</div>
+      <div class="r6-rays"></div>
+      <div class="r6-glow"></div>
+      <div class="r6-sparks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="r6-stage">
+        <div class="r6-num" id="rainbow-6000-num">
+          <span class="r6-depth">6,000</span><span class="r6-face">6,000</span><span class="r6-shine">6,000</span>
+        </div>
+        <div class="r6-label">
+          <span class="r6-depth">ボーナス</span><span class="r6-face">ボーナス</span>
+        </div>
       </div>
     </div>
 
@@ -116,8 +123,8 @@
     </div>
 
   </div>
-  <script src="logic.js?v=3"></script>
-  <script src="script.js?v=3"></script>
+  <script src="logic.js?v=5"></script>
+  <script src="script.js?v=5"></script>
   <script src="https://wwi195.github.io/site-analytics/tracker.js?v=1" data-site-id="pachinko-simulator-kishin2"></script>
 </body>
 </html>

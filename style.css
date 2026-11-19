@@ -482,6 +482,11 @@ body {
   padding: 5px 12px;
   flex-shrink: 0;
 }
+.rsb-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+}
 .rsb-header {
   display: flex;
   align-items: center;

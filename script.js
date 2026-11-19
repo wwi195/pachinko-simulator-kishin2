@@ -212,7 +212,7 @@ function playFlash(callback) {
 // 6000ボーナス：6 → 60 → 600 → 6000 と桁が段階的に叩きつけられ、
 // 最後に金色の「鬼がかり」が上に降りてくる。タップ（最後まで出た後）か自動で結果画面へ。
 const R6_STAGES = ['6', '60', '600', '6000'];
-const R6_STAGE_MS = 480;
+const R6_STAGE_MS = 240;
 const R6_ONI_DELAY_MS = 350;
 const R6_HOLD_MS = 1500;
 function play6000Rainbow(callback) {
@@ -297,9 +297,9 @@ function runRushSpin(opts = {}) {
   game.pending = { hitType, nominal, actual, spinsThisCycle: game.rushCycleSpins };
   game.rushCycleSpins = 0;
   if (hitType === 'restart') {
-    addLog(`リスタート！ ST${RUSH_ST_COUNT}回再セット (${rushState.chainCount}連)`, 'rush');
+    addLog(`リスタート！ ST${RUSH_ST_COUNT}回再セット (${rushState.chainCount + 1}連)`, 'rush');
   } else {
-    addLog(`${BONUS_LABELS[hitType]}！ ＋${actual}球 (${rushState.chainCount}連)`, 'rush');
+    addLog(`${BONUS_LABELS[hitType]}！ ＋${actual}球 (${rushState.chainCount + 1}連)`, 'rush');
   }
   if (hitType === 'b6000') {
     play6000Rainbow(() => setState('rush_hit_result'));
@@ -623,7 +623,7 @@ function buildScreen(state) {
     case 'rush_idle': {
       const skipDisabled = game.rush.stRemaining <= 10;
       return `<div class="screen">
-        <p class="chain-label">${game.rush.chainCount}連チャン中</p>
+        <p class="chain-label">${game.rush.chainCount + 1}連チャン中</p>
         <p class="rush-title">${RUSH_NAME}</p>
         <p class="rush-sub">ST残り <span>${game.rush.stRemaining}</span> 回</p>
         <div class="rush-spin-btns">
@@ -646,7 +646,7 @@ function buildScreen(state) {
         : `＋${actual.toLocaleString()}球獲得`;
       return `<div class="screen">
         <p class="result-sub">${spinsThisCycle}回転で当選</p>
-        <p class="chain-label">${game.rush.chainCount}連チャン中</p>
+        <p class="chain-label">${game.rush.chainCount + 1}連チャン中</p>
         <div class="vibun-box rush-box">
           <p class="bonus-main ${rankClass}">${BONUS_LABELS[hitType]}</p>
           <p class="bonus-sub">${sub}</p>

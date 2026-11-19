@@ -580,8 +580,8 @@ body {
 .r6-glow {
   position: absolute; inset: 0;
   background:
-    radial-gradient(circle at 50% 46%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.55) 16%, rgba(255,255,255,0) 42%),
-    radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.55) 100%);
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.15) 22%, rgba(255,255,255,0) 45%),
+    radial-gradient(circle at 50% 50%, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.6) 100%);
   animation: r6-glow 0.9s ease-in-out infinite alternate;
 }
 @keyframes r6-glow { from { opacity: 0.75; } to { opacity: 1; } }
@@ -609,51 +609,55 @@ body {
   50%      { opacity: 1; transform: scale(2.2) rotate(45deg); }
 }
 
-/* 立体文字：手前に傾けたステージ上に、厚み(押し出し)＋金属面＋光沢の3層 */
+/* ---- 立体文字 ---- */
 .r6-stage {
   position: relative;
-  text-align: center;
-  transform: rotateX(14deg);
-  animation: r6-sway 2.4s ease-in-out infinite;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: rotateX(12deg);
+  animation: r6-sway 2.6s ease-in-out infinite;
 }
 @keyframes r6-sway {
-  0%, 100% { transform: rotateX(14deg) rotateY(-10deg); }
-  50%      { transform: rotateX(8deg)  rotateY(10deg); }
+  0%, 100% { transform: rotateX(12deg) rotateY(-8deg); }
+  50%      { transform: rotateX(6deg)  rotateY(8deg); }
 }
-.r6-num, .r6-label {
+.r6-num, .r6-oni {
   position: relative;
   display: grid;
   isolation: isolate;
   font-weight: 900;
-  font-style: italic;
   line-height: 1;
+  white-space: nowrap;
 }
-.r6-num { font-size: min(30vw, 170px); letter-spacing: -2px; }
-.r6-label { font-size: min(12vw, 62px); margin-top: 12px; letter-spacing: 6px; }
-/* 3つの層を同じ位置に重ねる */
-.r6-num > span, .r6-label > span { grid-area: 1 / 1; }
-/* 厚み：段階的な影で押し出す（最背面） */
-.r6-depth {
+.r6-num > span, .r6-oni > span { grid-area: 1 / 1; }
+.r6-num { font-size: min(27vw, 150px); letter-spacing: -2px; font-style: italic; font-family: Impact, 'Arial Black', 'Helvetica Neue', sans-serif; }
+
+/* 数字：金の縁取り＋暗い押し出し（背面） */
+.r6-num .r6-depth {
   z-index: 0;
-  color: #8a4a00;
+  color: #c99a1a;
+  -webkit-text-stroke: 10px #e0b030;
   text-shadow:
-    0 1px 0 #7d4300, 0 2px 0 #703c00, 0 3px 0 #633500, 0 4px 0 #562e00,
-    0 5px 0 #492700, 0 6px 0 #3c2000, 0 7px 0 #2f1900, 0 8px 0 #221200,
-    0 9px 0 #180c00, 0 14px 12px rgba(0,0,0,0.65), 0 24px 34px rgba(0,0,0,0.5);
+    0 2px 0 #9a6f00, 0 4px 0 #835c00, 0 6px 0 #6b4a00, 0 8px 0 #543900,
+    0 10px 0 #3d2900, 0 12px 0 #2a1c00, 0 18px 16px rgba(0,0,0,0.7), 0 30px 40px rgba(0,0,0,0.5);
 }
-/* 金属の面 */
-.r6-face {
+/* 数字：レインボーの面（色が流れる） */
+.r6-num .r6-face {
   z-index: 1;
-  background: linear-gradient(180deg, #fffef2 0%, #fff3a0 20%, #ffcc00 44%, #a85f00 52%, #ffc93c 66%, #fff6c8 100%);
+  background: linear-gradient(180deg, #ff1744, #ff9100, #ffea00, #00e676, #00b0ff, #651fff, #d500f9, #ff1744);
+  background-size: 100% 300%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  -webkit-text-stroke: 2px #3d1f00;
+  -webkit-text-stroke: 2px #fff6b0;
+  animation: r6-rainbow-flow 1.2s linear infinite;
 }
-/* 光沢が走る（最前面） */
+@keyframes r6-rainbow-flow { from { background-position: 0 0; } to { background-position: 0 300%; } }
+/* 光沢（前面） */
 .r6-shine {
   z-index: 2;
-  background: linear-gradient(110deg, transparent 38%, rgba(255,255,255,0.95) 49%, transparent 60%);
+  background: linear-gradient(110deg, transparent 38%, rgba(255,255,255,0.9) 49%, transparent 60%);
   background-size: 260% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -663,30 +667,44 @@ body {
 }
 @keyframes r6-shine { from { background-position: 160% 0; } to { background-position: -100% 0; } }
 
-/* カウント中は震え、確定で叩きつけ→鼓動 */
-.r6-num { animation: r6-shake 0.1s linear infinite; }
-.r6-num.landed { animation: r6-land 0.55s cubic-bezier(.2,1.7,.4,1) forwards, r6-beat 0.7s ease-in-out 0.55s infinite; }
-@keyframes r6-shake {
-  0%   { transform: translate(0,0); }
-  50%  { transform: translate(3px,-2px); }
-  100% { transform: translate(-2px,2px); }
-}
-@keyframes r6-land {
-  0%   { transform: translateZ(220px) scale(1.6); filter: brightness(2); }
+/* 桁が増えるたびに叩きつけ、最後は鼓動 */
+.r6-num.slam { animation: r6-slam 0.42s cubic-bezier(.2,1.7,.4,1); }
+.r6-num.final { animation: r6-beat 0.7s ease-in-out infinite; }
+@keyframes r6-slam {
+  0%   { transform: translateZ(260px) scale(1.9); filter: brightness(2.2); }
+  60%  { transform: translateZ(0) scale(0.94); filter: brightness(1.2); }
   100% { transform: translateZ(0) scale(1); filter: brightness(1); }
 }
 @keyframes r6-beat {
   0%, 100% { transform: scale(1); }
-  50%      { transform: scale(1.07); filter: brightness(1.15); }
+  50%      { transform: scale(1.06); filter: brightness(1.15); }
 }
-/* ラベルは細い文字なので、面は明るい単色＋細い縁取りにする */
-.r6-label .r6-face {
-  background: none;
-  color: #fff4b8;
-  -webkit-text-stroke: 1px #5a2e00;
+
+/* 「鬼がかり」：金の文字（最後に上から降りてくる） */
+.r6-oni {
+  font-size: min(15vw, 80px);
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+  opacity: 0;
+  transform: translateY(-60px) scale(1.4);
 }
-.r6-label .r6-depth {
-  color: #6b3800;
-  text-shadow: 0 1px 0 #5a2e00, 0 2px 0 #4a2500, 0 3px 0 #3a1c00, 0 6px 8px rgba(0,0,0,0.6);
+.r6-oni.show { animation: r6-oni-in 0.45s cubic-bezier(.2,1.6,.4,1) forwards; }
+@keyframes r6-oni-in {
+  0%   { opacity: 0; transform: translateY(-60px) scale(1.5); filter: brightness(2.5); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: brightness(1); }
 }
-.r6-label .r6-face { color: #fff8d0; -webkit-text-stroke: 0.5px #5a2e00; text-shadow: 0 0 8px rgba(255, 230, 120, 0.9); }
+.r6-oni .r6-depth {
+  z-index: 0;
+  color: #7a4a00;
+  -webkit-text-stroke: 3px #3a2000;
+  text-shadow: 0 2px 0 #4d2c00, 0 4px 0 #3a2000, 0 6px 0 #261500, 0 10px 12px rgba(0,0,0,0.7);
+}
+.r6-oni .r6-face {
+  z-index: 1;
+  background: linear-gradient(180deg, #ffffff 0%, #fff4b0 25%, #ffd000 50%, #c88a00 58%, #ffe066 74%, #fffbe0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 1px #6a3a00;
+  filter: drop-shadow(0 0 6px rgba(255, 210, 60, 0.9));
+}

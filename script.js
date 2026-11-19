@@ -201,37 +201,45 @@ function playFlash(callback) {
   }, 300);
 }
 
-// 6000ボーナス：画面の大部分をレインボーにし、巨大な「6000」がカウントアップして跳ねる。
-// タップか約2.8秒で結果画面へ。
-const RAINBOW_6000_MS = 2800;
-const RAINBOW_COUNT_MS = 900;
+// 6000ボーナス：6 → 60 → 600 → 6000 と桁が段階的に叩きつけられ、
+// 最後に金色の「鬼がかり」が上に降りてくる。タップ（最後まで出た後）か自動で結果画面へ。
+const R6_STAGES = ['6', '60', '600', '6000'];
+const R6_STAGE_MS = 480;
+const R6_ONI_DELAY_MS = 350;
+const R6_HOLD_MS = 1500;
 function play6000Rainbow(callback) {
   const el = document.getElementById('rainbow-6000');
   const num = document.getElementById('rainbow-6000-num');
+  const oni = document.getElementById('rainbow-6000-oni');
+  const timers = [];
   let done = false;
   const finish = () => {
     if (done) return;
     done = true;
+    timers.forEach(clearTimeout);
     el.classList.remove('active');
     el.onclick = null;
     callback();
   };
-  el.classList.add('active');
-  const start = performance.now();
-  const step = (now) => {
-    if (done) return;
-    const t = Math.min(1, (now - start) / RAINBOW_COUNT_MS);
-    const eased = 1 - Math.pow(1 - t, 3);
-    const text = Math.round(6000 * eased).toLocaleString();
+  const setNum = (text) => {
     num.querySelectorAll('span').forEach((sp) => { sp.textContent = text; });
-    if (t < 1) requestAnimationFrame(step);
-    else num.classList.add('landed');
+    num.classList.remove('slam', 'final');
+    void num.offsetWidth;
+    num.classList.add('slam');
   };
-  num.classList.remove('landed');
-  num.querySelectorAll('span').forEach((sp) => { sp.textContent = '0'; });
-  requestAnimationFrame(step);
-  setTimeout(() => { el.onclick = finish; }, RAINBOW_COUNT_MS);
-  setTimeout(finish, RAINBOW_6000_MS);
+  oni.classList.remove('show');
+  el.onclick = null;
+  el.classList.add('active');
+  R6_STAGES.forEach((text, i) => {
+    timers.push(setTimeout(() => setNum(text), i * R6_STAGE_MS));
+  });
+  const lastAt = (R6_STAGES.length - 1) * R6_STAGE_MS;
+  timers.push(setTimeout(() => {
+    oni.classList.add('show');
+    num.classList.add('final');
+    el.onclick = finish;
+  }, lastAt + R6_ONI_DELAY_MS));
+  timers.push(setTimeout(finish, lastAt + R6_ONI_DELAY_MS + R6_HOLD_MS));
 }
 
 function enterRush(entryBonus = null) {

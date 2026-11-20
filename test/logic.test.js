@@ -140,3 +140,8 @@ test('出現率：ST当選率・連チャン分布・単発率', () => {
   assert.ok(Math.abs(logic.P_TANPATSU - (0.45 + 0.55 * (1 - logic.P_ST_HIT))) < 1e-12);
   assert.ok(Math.abs(logic.hitIntervalProbability(1000).atLeast - Math.pow(1 - 1 / 349.9, 999)) < 1e-12);
 });
+
+test('鬼がかり予告：予告発生時の信頼度75%、先バレ全体の信頼度は40%のまま', () => {
+  const c = 0.4, a = logic.ONIGAKARI_RATE_GIVEN_HIT, b = logic.onigakariRateGivenMiss();
+  assert.ok(Math.abs((c * a) / (c * a + (1 - c) * b) - 0.75) < 1e-12);
+});

@@ -89,8 +89,9 @@ function runNormalSpin() {
 
   if (result === 'hit' || result === 'false_enzoku') {
     const spentSinceLastHit = game.toushi - game.lastHitToushi;
-    game.pending = { type: result, interval, spentSinceLastHit };
-    addLog(`${interval}回転で先バレ発生！`);
+    const onigakari = rollOnigakari(result === 'hit');
+    game.pending = { type: result, interval, spentSinceLastHit, onigakari };
+    addLog(`${interval}回転で先バレ発生！${onigakari ? '（鬼がかり予告）' : ''}`, onigakari ? 'rush' : '');
     setState('enzoku');
     return true;
   }
@@ -639,7 +640,12 @@ function buildScreen(state) {
       return `<div class="screen">
         <p class="enzoku-label">${game.pending.interval}回転　先バレ発生！</p>
         <p class="result-sub">前回大当たりから ${game.pending.spentSinceLastHit.toLocaleString()}円使用</p>
-        <p class="shinraido">信頼度 ${ENZOKU_CONFIDENCE}%</p>
+        ${game.pending.onigakari
+          ? `<div class="onigakari-yokoku">
+               <p class="onigakari-title">鬼がかり予告</p>
+               <p class="onigakari-desc">鬼がかり予告発生（信頼度${ONIGAKARI_CONFIDENCE}%に上昇）</p>
+             </div>`
+          : `<p class="shinraido">信頼度 ${ENZOKU_CONFIDENCE}%</p>`}
         <button class="btn-action" onclick="handleEnzokuJudge()">▶ 判定に進む</button>
       </div>`;
 

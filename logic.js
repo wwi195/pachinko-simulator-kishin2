@@ -48,6 +48,20 @@ function rollNormalHitType() {
   return rollWeighted(NORMAL_HIT_TYPES, NORMAL_HIT_TYPE_ORDER);
 }
 
+// 鬼がかり予告：先バレの一部で発生し、その変動の信頼度を75%に引き上げる。
+// 大当たり確率・先バレ発生率は変えず、先バレの「当たり/はずれ」のうち一部に
+// 予告を付けるだけ。当たり先バレの30%に付け、はずれ先バレへの付与率を逆算する。
+//   P(当たり|予告) = 0.4×a ÷ (0.4×a + 0.6×b) = 0.75 → b = a × 0.4×0.25 ÷ (0.6×0.75)
+const ONIGAKARI_CONFIDENCE = 75;
+const ONIGAKARI_RATE_GIVEN_HIT = 0.30;
+function onigakariRateGivenMiss() {
+  const c = ENZOKU_CONFIDENCE / 100, t = ONIGAKARI_CONFIDENCE / 100;
+  return ONIGAKARI_RATE_GIVEN_HIT * c * (1 - t) / ((1 - c) * t);
+}
+function rollOnigakari(isHit) {
+  return Math.random() < (isHit ? ONIGAKARI_RATE_GIVEN_HIT : onigakariRateGivenMiss());
+}
+
 // 3000白鯨戦：先バレ発生時に突入。勝利=3000ボーナス(RUSH直行)、敗北=はずれ。
 // 成功率約33%になるよう、3000ボーナス1回につき、はずれ先バレ2回を白鯨戦(敗北)に回す。
 // はずれ先バレ(当たりの1.5倍)のうち白鯨戦になる割合 = 2×10% ÷ 150% ≒ 13.3%。
@@ -155,6 +169,10 @@ if (typeof module !== 'undefined' && module.exports) {
     calcSpinCost,
     P_HIT,
     ENZOKU_CONFIDENCE,
+    ONIGAKARI_CONFIDENCE,
+    ONIGAKARI_RATE_GIVEN_HIT,
+    onigakariRateGivenMiss,
+    rollOnigakari,
     falseEnzokuProbability,
     spinNormal,
     NORMAL_HIT_TYPES,

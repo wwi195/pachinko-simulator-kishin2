@@ -809,3 +809,27 @@ body {
 .vibun-box.box-6000.revealed .bonus-main { animation: box6000-pop 0.4s cubic-bezier(.2,1.6,.4,1); }
 @keyframes box6000-pop { from { transform: scale(1.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 .btn-action:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ---- 鬼がかり予告 ---- */
+.onigakari-yokoku {
+  margin: 4px 0;
+  padding: 8px 18px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #2a0a0a, #5c0f0f);
+  border: 2px solid #c9a227;
+  box-shadow: 0 0 14px rgba(201, 162, 39, 0.55);
+  text-align: center;
+  animation: onigakari-in 0.45s cubic-bezier(.2,1.6,.4,1), onigakari-glow 1.2s ease-in-out 0.45s infinite;
+}
+.onigakari-title {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  background: linear-gradient(180deg, #fffbe0 0%, #ffd54f 45%, #b8860b 60%, #ffe082 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.onigakari-desc { font-size: 12px; font-weight: bold; color: #ffd54f; margin-top: 2px; }
+@keyframes onigakari-in { from { transform: scale(1.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes onigakari-glow { 50% { box-shadow: 0 0 24px rgba(255, 210, 60, 0.9); } }

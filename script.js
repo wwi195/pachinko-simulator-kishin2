@@ -256,13 +256,23 @@ function playOniWalk() {
 
 // 6000ボーナス：レインボーの枠だけを1秒見せ、その後に「6000ボーナス」を表示して継続ボタンを解放
 const BOX6000_BLANK_MS = 1000;
+const SHITAZARA_NOTE_RATE = 0.05;
 function reveal6000AfterBlank() {
   const box = document.getElementById('rush-hit-box');
   const btn = document.getElementById('rush-hit-continue');
   if (!box || !btn) return;
   box.classList.add('blank');
   btn.disabled = true;
+  // 5%で、空白の枠にあらかじめ「下皿が満タンです」を表示しておく
+  let shitazara = null;
+  if (Math.random() < SHITAZARA_NOTE_RATE) {
+    shitazara = document.createElement('p');
+    shitazara.className = 'shitazara-note';
+    shitazara.textContent = '下皿が満タンです';
+    box.appendChild(shitazara);
+  }
   setTimeout(() => {
+    if (shitazara) shitazara.remove();
     box.classList.remove('blank');
     box.classList.add('revealed');
     btn.disabled = false;

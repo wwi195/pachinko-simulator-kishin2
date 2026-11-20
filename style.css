@@ -862,3 +862,18 @@ body {
 @keyframes oni-bob { 0%, 100% { transform: translateY(0) rotate(0deg); } 25%, 75% { transform: translateY(-5px) rotate(-2deg); } 50% { transform: translateY(0) rotate(0deg); } }
 @keyframes oni-swing { 0%, 100% { transform: rotate(28deg); } 50% { transform: rotate(-28deg); } }
 @keyframes oni-swing-arm { 0%, 100% { transform: rotate(22deg); } 50% { transform: rotate(-22deg); } }
+
+/* 6000の空白枠に5%で出る「下皿が満タンです」 */
+.vibun-box.box-6000.blank > .shitazara-note {
+  visibility: visible;
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #ff4fa3;
+  letter-spacing: 1px;
+}

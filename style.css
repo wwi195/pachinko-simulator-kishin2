@@ -825,17 +825,40 @@ body {
   filter: blur(1.6px) drop-shadow(0 0 8px rgba(110, 90, 255, 0.6));
   opacity: 0.6;
 }
+/* 左端から画面中央までのそのそ歩く */
 #oni-walker.walking {
   visibility: visible;
-  animation: oni-cross 3.6s linear forwards;
+  animation: oni-to-center 4s linear forwards;
+}
+/* 中央でズームアップし、薄い色で画面を覆いながら消える */
+#oni-walker.zooming {
+  visibility: visible;
+  transform-origin: 36px 90px;
+  animation: oni-zoom 0.9s ease-in forwards;
 }
 /* のそのそ歩き：上下動＋脚と腕を交互に振る（腰・肩を支点） */
-#oni-walker.walking .oni-body { animation: oni-bob 0.5s ease-in-out infinite; }
-#oni-walker.walking .oni-leg-front { animation: oni-swing 1s ease-in-out infinite; transform-origin: 30px 71px; transform-box: view-box; }
-#oni-walker.walking .oni-leg-back  { animation: oni-swing 1s ease-in-out -0.5s infinite; transform-origin: 30px 71px; transform-box: view-box; }
-#oni-walker.walking .oni-arm-front { animation: oni-swing-arm 1s ease-in-out -0.5s infinite; transform-origin: 30px 34px; transform-box: view-box; }
-#oni-walker.walking .oni-arm-back  { animation: oni-swing-arm 1s ease-in-out infinite; transform-origin: 30px 34px; transform-box: view-box; }
-@keyframes oni-cross { from { transform: translateX(-90px); } to { transform: translateX(calc(100vw + 20px)); } }
+#oni-walker.walking .oni-body { animation: oni-bob 1s ease-in-out infinite; }
+#oni-walker.walking .oni-leg-front { animation: oni-swing 2s ease-in-out infinite; transform-origin: 30px 71px; transform-box: view-box; }
+#oni-walker.walking .oni-leg-back  { animation: oni-swing 2s ease-in-out -1s infinite; transform-origin: 30px 71px; transform-box: view-box; }
+#oni-walker.walking .oni-arm-front { animation: oni-swing-arm 2s ease-in-out -1s infinite; transform-origin: 30px 34px; transform-box: view-box; }
+#oni-walker.walking .oni-arm-back  { animation: oni-swing-arm 2s ease-in-out infinite; transform-origin: 30px 34px; transform-box: view-box; }
+@keyframes oni-to-center { from { transform: translateX(-90px); } to { transform: translateX(calc(50vw - 36px)); } }
+@keyframes oni-zoom {
+  0%   { transform: translateX(calc(50vw - 36px)) scale(1);  opacity: 0.6; }
+  100% { transform: translateX(calc(50vw - 36px)) scale(16); opacity: 0; }
+}
+/* 画面を覆う薄い色 */
+#oni-tint {
+  position: fixed;
+  inset: 0;
+  z-index: 54;
+  pointer-events: none;
+  background: rgba(91, 75, 196, 0.32);
+  opacity: 0;
+}
+#oni-tint.on { animation: oni-tint 1.5s ease-out forwards; }
+@keyframes oni-tint { 0% { opacity: 0; } 35% { opacity: 1; } 100% { opacity: 0; } }
+
 @keyframes oni-bob { 0%, 100% { transform: translateY(0); } 25%, 75% { transform: translateY(-2px); } 50% { transform: translateY(0); } }
 @keyframes oni-swing { 0%, 100% { transform: rotate(18deg); } 50% { transform: rotate(-18deg); } }
 @keyframes oni-swing-arm { 0%, 100% { transform: rotate(14deg); } 50% { transform: rotate(-14deg); } }

@@ -218,26 +218,36 @@ const R6_STAGES = ['6', '60', '600', '6000'];
 const R6_STAGE_MS = 240;
 const R6_ONI_DELAY_MS = 700;
 const R6_HOLD_MS = 500;
-// 鬼がかり予告：鬼の女の子が上を見ながら左→右へのそのそ横切り、
-// 通過後に「先バレ発生！」の下へひっそり予告文を出す（歩行中は判定ボタンを押せない）
-const ONI_WALK_MS = 3600;
+// 鬼がかり予告：角のある人影が上を見ながら左から中央へのそのそ歩き、
+// 中央でズームアップして薄い色が画面を覆って消える。その後「先バレ発生！」の下へ
+// ひっそり予告文を出す（演出中は判定ボタンを押せない）
+const ONI_WALK_MS = 4000;
+const ONI_ZOOM_MS = 900;
+const ONI_TINT_MS = 1500;
 function playOniWalk() {
   const walker = document.getElementById('oni-walker');
+  const tint = document.getElementById('oni-tint');
   const note = document.getElementById('onigakari-note');
   const btn = document.getElementById('enzoku-judge-btn');
   if (!walker) return;
   if (note) note.classList.add('hidden-note');
   if (btn) btn.disabled = true;
-  walker.classList.remove('walking');
+  walker.classList.remove('walking', 'zooming');
   void walker.offsetWidth;
   walker.classList.add('walking');
   setTimeout(() => {
     walker.classList.remove('walking');
+    walker.classList.add('zooming');
+    if (tint) { tint.classList.remove('on'); void tint.offsetWidth; tint.classList.add('on'); }
+  }, ONI_WALK_MS);
+  setTimeout(() => {
+    walker.classList.remove('zooming');
+    if (tint) tint.classList.remove('on');
     const n = document.getElementById('onigakari-note');
     const b = document.getElementById('enzoku-judge-btn');
     if (n) n.classList.remove('hidden-note');
     if (b) b.disabled = false;
-  }, ONI_WALK_MS);
+  }, ONI_WALK_MS + ONI_TINT_MS);
 }
 
 // 6000ボーナス：レインボーの枠だけを1秒見せ、その後に「6000ボーナス」を表示して継続ボタンを解放

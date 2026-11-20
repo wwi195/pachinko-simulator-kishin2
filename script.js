@@ -333,7 +333,8 @@ function runRushSpin(opts = {}) {
   if (outcome === 'miss') {
     if (!opts.silent) {
       addLog(`ST残り${rushState.stRemaining}回`);
-      setState('rush_miss');
+      // ST中の外れは「外れ」画面を出さず、そのまま続けて押せるようにする
+      handleRushMissContinue();
       return true;
     }
     return false;

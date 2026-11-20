@@ -221,7 +221,7 @@ const R6_HOLD_MS = 500;
 // 鬼がかり予告：角のある人影が上を見ながら左から中央へのそのそ歩き、
 // 中央でズームアップして薄い色が画面を覆って消える。その後「先バレ発生！」の下へ
 // ひっそり予告文を出す（演出中は判定ボタンを押せない）
-const ONI_WALK_MS = 4000;
+const ONI_WALK_MS = 2000;
 const ONI_ZOOM_MS = 900;
 const ONI_TINT_MS = 1500;
 function playOniWalk() {

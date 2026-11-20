@@ -821,8 +821,9 @@ body {
   pointer-events: none;
   transform: translateX(-90px);
   visibility: hidden;
-  filter: drop-shadow(0 0 6px rgba(120, 100, 255, 0.7));
-  opacity: 0.92;
+  /* 単色の影をぼかし、全体を半透明にして「うっすら人影」に見せる（継ぎ目が出ない） */
+  filter: blur(1.6px) drop-shadow(0 0 8px rgba(110, 90, 255, 0.6));
+  opacity: 0.6;
 }
 #oni-walker.walking {
   visibility: visible;

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>パチンコシミュレーター（リゼロ鬼がかり2）</title>
-  <link rel="stylesheet" href="style.css?v=17">
+  <link rel="stylesheet" href="style.css?v=19">
 </head>
 <body>
   <div id="app">
@@ -120,7 +120,7 @@
 
     <!-- 鬼がかり予告：上を見ながら画面を横切る、角のある青紫の人影（約7頭身・右向き） -->
     <div id="oni-walker" aria-hidden="true">
-      <svg viewBox="0 0 60 150" width="72" height="180">
+      <svg viewBox="0 -12 60 162" width="72" height="194">
         <defs>
           <linearGradient id="oni-shade" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stop-color="#6d5bd0"/>
@@ -129,29 +129,29 @@
         </defs>
         <g class="oni-body">
           <!-- 奥側の脚・腕（少し暗い色） -->
-          <g class="oni-leg oni-leg-back" fill="#30227a">
+          <g class="oni-leg oni-leg-back" fill="#5b4bc4">
             <path d="M25 70 L35 70 Q35.5 90 33 106 Q34.5 121 32.5 138 L28.5 138 Q28 121 27 106 Q24.5 90 25 70 Z"/>
             <path d="M28 136.5 L33 136.5 Q39 138.5 39.5 142 L28 142 Z"/>
           </g>
-          <g class="oni-arm oni-arm-back" fill="#30227a">
+          <g class="oni-arm oni-arm-back" fill="#5b4bc4">
             <path d="M27 33 Q32.5 31.5 33.5 36 L32.5 54 Q32.5 64 31.5 72 L28.5 72 Q28 63 28 54 Z"/>
           </g>
           <!-- 胴体 -->
-          <path fill="url(#oni-shade)" d="M23.5 32 Q31 29 37 33 L36.5 45 Q38.5 50 35.5 56 Q37.5 64 37 72 L23 72 Q21 64 24.5 56 Q22 45 23.5 32 Z"/>
+          <path fill="#5b4bc4" d="M23.5 32 Q31 29 37 33 L36.5 45 Q38.5 50 35.5 56 Q37.5 64 37 72 L23 72 Q21 64 24.5 56 Q22 45 23.5 32 Z"/>
           <!-- 首 -->
-          <path fill="url(#oni-shade)" d="M27.5 23 L33 23 L33.5 33 L27 33 Z"/>
+          <path fill="#5b4bc4" d="M27.5 23 L33 23 L33.5 33 L27 33 Z"/>
           <!-- 頭（上向き）・背中へ流れる長い髪・おでこの角 -->
-          <g fill="url(#oni-shade)" transform="rotate(-20 30 22)">
+          <g fill="#5b4bc4" transform="rotate(-20 30 22)">
             <path d="M22.5 15 Q22 4 31 3.5 Q39.5 4 39.5 13 L41 16.5 L39 17.5 L39.5 20 Q37.5 25 31.5 25.5 Q25 25.5 23.5 21 Z"/>
             <path d="M24 9 Q15.5 20 18.5 44 Q19.5 52 17.5 58 Q26.5 50 26 38 Q25.5 26 28 15 Z"/>
-            <path d="M34.5 6.5 L40.5 -5 L38.5 9.5 Z"/>
+            <path d="M33.5 7 L42.5 -9 L39 10 Z"/>
           </g>
           <!-- 手前側の脚・腕 -->
-          <g class="oni-leg oni-leg-front" fill="url(#oni-shade)">
+          <g class="oni-leg oni-leg-front" fill="#5b4bc4">
             <path d="M25 70 L35 70 Q35.5 90 33 106 Q34.5 121 32.5 138 L28.5 138 Q28 121 27 106 Q24.5 90 25 70 Z"/>
             <path d="M28 136.5 L33 136.5 Q39 138.5 39.5 142 L28 142 Z"/>
           </g>
-          <g class="oni-arm oni-arm-front" fill="#5a48c0">
+          <g class="oni-arm oni-arm-front" fill="#5b4bc4">
             <path d="M27 33 Q32.5 31.5 33.5 36 L32.5 54 Q32.5 64 31.5 72 L28.5 72 Q28 63 28 54 Z"/>
           </g>
         </g>
@@ -179,8 +179,8 @@
     </div>
 
   </div>
-  <script src="logic.js?v=17"></script>
-  <script src="script.js?v=17"></script>
-  <script src="https://wwi195.github.io/site-analytics/tracker.js?v=8" data-site-id="pachinko-simulator-kishin2"></script>
+  <script src="logic.js?v=19"></script>
+  <script src="script.js?v=19"></script>
+  <script src="https://wwi195.github.io/site-analytics/tracker.js?v=10" data-site-id="pachinko-simulator-kishin2"></script>
 </body>
 </html>

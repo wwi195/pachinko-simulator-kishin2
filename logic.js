@@ -50,15 +50,20 @@ function rollNormalHitType() {
 
 // 鬼がかり予告：先バレの一部で発生し、その変動の信頼度を75%に引き上げる。
 // 大当たり確率・先バレ発生率は変えず、先バレの「当たり/はずれ」のうち一部に
-// 予告を付けるだけ。当たり先バレの30%に付け、はずれ先バレへの付与率を逆算する。
-//   P(当たり|予告) = 0.4×a ÷ (0.4×a + 0.6×b) = 0.75 → b = a × 0.4×0.25 ÷ (0.6×0.75)
+// 予告を付けるだけ。白鯨戦になる先バレには付けない。
+// 白鯨戦にならない先バレ（当たり＝1500ボーナス、はずれ＝白鯨戦なし）のうち、
+// 当たりの30%に付け、はずれへの付与率を逆算して P(当たり|予告)=75% にする。
 const ONIGAKARI_CONFIDENCE = 75;
 const ONIGAKARI_RATE_GIVEN_HIT = 0.30;
 function onigakariRateGivenMiss() {
   const c = ENZOKU_CONFIDENCE / 100, t = ONIGAKARI_CONFIDENCE / 100;
-  return ONIGAKARI_RATE_GIVEN_HIT * c * (1 - t) / ((1 - c) * t);
+  const hitPool  = c * NORMAL_HIT_TYPES.b1500.weight;             // 白鯨戦にならない当たり
+  const missPool = (1 - c) * (1 - hakugeiRateGivenFalseEnzoku()); // 白鯨戦にならないはずれ
+  return ONIGAKARI_RATE_GIVEN_HIT * hitPool * (1 - t) / (missPool * t);
 }
-function rollOnigakari(isHit) {
+// isHakugei=true の先バレには予告を出さない
+function rollOnigakari(isHit, isHakugei) {
+  if (isHakugei) return false;
   return Math.random() < (isHit ? ONIGAKARI_RATE_GIVEN_HIT : onigakariRateGivenMiss());
 }
 

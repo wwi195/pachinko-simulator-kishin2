@@ -141,7 +141,9 @@ test('出現率：ST当選率・連チャン分布・単発率', () => {
   assert.ok(Math.abs(logic.hitIntervalProbability(1000).atLeast - Math.pow(1 - 1 / 349.9, 999)) < 1e-12);
 });
 
-test('鬼がかり予告：予告発生時の信頼度75%、先バレ全体の信頼度は40%のまま', () => {
+test('鬼がかり予告：白鯨戦以外の先バレで信頼度75%', () => {
   const c = 0.4, a = logic.ONIGAKARI_RATE_GIVEN_HIT, b = logic.onigakariRateGivenMiss();
-  assert.ok(Math.abs((c * a) / (c * a + (1 - c) * b) - 0.75) < 1e-12);
+  const hitPool = c * 0.9, missPool = (1 - c) * (1 - logic.hakugeiRateGivenFalseEnzoku());
+  assert.ok(Math.abs((hitPool * a) / (hitPool * a + missPool * b) - 0.75) < 1e-12);
+  assert.equal(logic.rollOnigakari(true, true), false);
 });

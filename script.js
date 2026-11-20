@@ -89,8 +89,12 @@ function runNormalSpin() {
 
   if (result === 'hit' || result === 'false_enzoku') {
     const spentSinceLastHit = game.toushi - game.lastHitToushi;
-    const onigakari = rollOnigakari(result === 'hit');
-    game.pending = { type: result, interval, spentSinceLastHit, onigakari };
+    // 白鯨戦になるかは先バレの時点で決めておき、白鯨戦なら鬼がかり予告は出さない
+    const isHit = result === 'hit';
+    const hitType = isHit ? rollNormalHitType() : null;
+    const hakugei = isHit ? hitType === 'b3000' : rollHakugeiOnFalseEnzoku();
+    const onigakari = rollOnigakari(isHit, hakugei);
+    game.pending = { type: result, interval, spentSinceLastHit, onigakari, hitType, preHakugei: hakugei };
     addLog(`${interval}回転で先バレ発生！${onigakari ? '（鬼がかり予告）' : ''}`, onigakari ? 'rush' : '');
     setState('enzoku');
     if (onigakari) playOniWalk();
@@ -100,7 +104,7 @@ function runNormalSpin() {
 }
 
 function resolveNormalHit(interval) {
-  const hitType = rollNormalHitType();
+  const hitType = game.pending.hitType || rollNormalHitType();
   game.pending = { ...game.pending, interval, hitType };
   // 3000ボーナスは必ず白鯨戦（勝利）を経由する
   if (hitType === 'b3000') {
@@ -163,7 +167,7 @@ function handleEnzokuJudge() {
   if (game.pending.type === 'hit') {
     game.enzokuMissStreak = 0;
     resolveNormalHit(game.pending.interval);
-  } else if ((game.enzokuMissStreak++, rollHakugeiOnFalseEnzoku())) {
+  } else if ((game.enzokuMissStreak++, game.pending.preHakugei)) {
     addLog('3000白鯨戦 突入！', 'rush');
     setState('hakugei');
   } else {

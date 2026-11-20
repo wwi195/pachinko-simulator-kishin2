@@ -784,8 +784,18 @@ body {
 }
 @keyframes box6000-flow { from { background-position: 0% 50%; } to { background-position: 150% 50%; } }
 @keyframes box6000-shine { from { left: -60%; } to { left: 120%; } }
-/* 1秒間は中身を空にする */
+/* 1秒間は中身を空にし、枠も普通の白い枠にしておく */
 .vibun-box.box-6000.blank > * { visibility: hidden; }
+.vibun-box.box-6000.blank {
+  background: #fbfbfc;
+  border-color: #eee;
+  box-shadow: none;
+  animation: none;
+}
+.vibun-box.box-6000.blank::after { display: none; }
+/* 表示の瞬間にレインボーがパッと広がる */
+.vibun-box.box-6000.revealed { animation: box6000-flow 2s linear infinite, box6000-flash 0.35s ease-out; }
+@keyframes box6000-flash { from { filter: brightness(1.8); } to { filter: brightness(1); } }
 .vibun-box.box-6000 > p { position: relative; z-index: 1; }
 /* 6000は1500より大きい文字（配置は同じ） */
 .vibun-box.box-6000 .bonus-main {

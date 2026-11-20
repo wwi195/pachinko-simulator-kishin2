@@ -303,7 +303,7 @@ function runRushSpin(opts = {}) {
     addLog(`${BONUS_LABELS[hitType]}！ ＋${actual}球 (${rushState.chainCount + 1}連)`, 'rush');
   }
   if (hitType === 'b6000') {
-    play6000Rainbow(() => setState('rush_hit_result'));
+    setState('rush_hit_result'); // 6000は結果枠そのものをレインボーで表示
   } else {
     setState('rush_hit_result');
   }
@@ -714,10 +714,16 @@ function buildScreen(state) {
       return `<div class="screen">
         <p class="result-sub">${spinsThisCycle}回転で当選</p>
         <p class="chain-label">${game.rush.chainCount + 1}連チャン中</p>
-        <div class="vibun-box rush-box">
-          <p class="bonus-main ${rankClass}">${BONUS_LABELS[hitType]}</p>
-          <p class="bonus-sub">${sub}</p>
-        </div>
+        ${hitType === 'b6000'
+          ? `<div class="vibun-box rush-box box-6000">
+              <p class="num-6000">6000</p>
+              <p class="label-6000">ボーナス</p>
+              <p class="bonus-sub sub-6000">${sub}</p>
+            </div>`
+          : `<div class="vibun-box rush-box">
+              <p class="bonus-main ${rankClass}">${BONUS_LABELS[hitType]}</p>
+              <p class="bonus-sub">${sub}</p>
+            </div>`}
         <button class="btn-action" onclick="handleRushHitContinue()" style="margin-top:16px;">▶ RUSH継続へ</button>
       </div>`;
     }

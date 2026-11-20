@@ -216,6 +216,21 @@ const R6_STAGES = ['6', '60', '600', '6000'];
 const R6_STAGE_MS = 240;
 const R6_ONI_DELAY_MS = 700;
 const R6_HOLD_MS = 500;
+// 6000ボーナス：レインボーの枠だけを1秒見せ、その後に「6000ボーナス」を表示して継続ボタンを解放
+const BOX6000_BLANK_MS = 1000;
+function reveal6000AfterBlank() {
+  const box = document.getElementById('rush-hit-box');
+  const btn = document.getElementById('rush-hit-continue');
+  if (!box || !btn) return;
+  box.classList.add('blank');
+  btn.disabled = true;
+  setTimeout(() => {
+    box.classList.remove('blank');
+    box.classList.add('revealed');
+    btn.disabled = false;
+  }, BOX6000_BLANK_MS);
+}
+
 function play6000Rainbow(callback) {
   const el = document.getElementById('rainbow-6000');
   const num = document.getElementById('rainbow-6000-num');
@@ -303,7 +318,8 @@ function runRushSpin(opts = {}) {
     addLog(`${BONUS_LABELS[hitType]}！ ＋${actual}球 (${rushState.chainCount + 1}連)`, 'rush');
   }
   if (hitType === 'b6000') {
-    setState('rush_hit_result'); // 6000は結果枠そのものをレインボーで表示
+    setState('rush_hit_result');
+    reveal6000AfterBlank(); // 6000は枠だけレインボーで1秒空にしてから表示
   } else {
     setState('rush_hit_result');
   }
@@ -714,17 +730,11 @@ function buildScreen(state) {
       return `<div class="screen">
         <p class="result-sub">${spinsThisCycle}回転で当選</p>
         <p class="chain-label">${game.rush.chainCount + 1}連チャン中</p>
-        ${hitType === 'b6000'
-          ? `<div class="vibun-box rush-box box-6000">
-              <p class="num-6000">6000</p>
-              <p class="label-6000">ボーナス</p>
-              <p class="bonus-sub sub-6000">${sub}</p>
-            </div>`
-          : `<div class="vibun-box rush-box">
-              <p class="bonus-main ${rankClass}">${BONUS_LABELS[hitType]}</p>
-              <p class="bonus-sub">${sub}</p>
-            </div>`}
-        <button class="btn-action" onclick="handleRushHitContinue()" style="margin-top:16px;">▶ RUSH継続へ</button>
+        <div class="vibun-box rush-box${hitType === 'b6000' ? ' box-6000' : ''}" id="rush-hit-box">
+          <p class="bonus-main ${rankClass}">${BONUS_LABELS[hitType]}</p>
+          <p class="bonus-sub">${sub}</p>
+        </div>
+        <button class="btn-action" id="rush-hit-continue" onclick="handleRushHitContinue()" style="margin-top:16px;">▶ RUSH継続へ</button>
       </div>`;
     }
 

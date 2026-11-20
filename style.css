@@ -752,19 +752,27 @@ body {
 #slump-svg .sl-dot.plus { fill: #2e9e5e; }
 #slump-svg .sl-dot.minus { fill: #d64545; }
 
-/* ---- 6000ボーナス：結果枠の中を流れるレインボーに ---- */
+/* ---- RUSH当選の結果枠：どの当選も同じ大きさ・同じ文字配置 ---- */
+.vibun-box.rush-box {
+  box-sizing: border-box;
+  height: 92px;
+  padding: 0 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---- 6000ボーナス：枠の中を流れるレインボー（枠・配置は他と同じ） ---- */
 .vibun-box.box-6000 {
   position: relative;
   overflow: hidden;
-  border: 2px solid #fff;
-  padding: 14px 18px 16px;
-  /* 横向きグラデーション（端の色を揃えて繰り返しの継ぎ目をなくす） */
+  border-color: #fff;
   background: linear-gradient(90deg, #ff3b3b, #ff9d3b, #ffe93b, #3bff6a, #3bcfff, #6a3bff, #ff3bcf, #ff3b3b);
   background-size: 300% 100%;
-  animation: box6000-flow 2s linear infinite, box6000-in 0.45s cubic-bezier(.2,1.6,.4,1);
-  box-shadow: 0 0 18px rgba(255, 120, 200, 0.55), 0 0 36px rgba(120, 180, 255, 0.35);
+  animation: box6000-flow 2s linear infinite;
+  box-shadow: 0 0 14px rgba(255, 120, 200, 0.5), 0 0 28px rgba(120, 180, 255, 0.3);
 }
-/* 光が横切る */
 .vibun-box.box-6000::after {
   content: '';
   position: absolute;
@@ -775,30 +783,19 @@ body {
   animation: box6000-shine 1.6s ease-in-out infinite;
 }
 @keyframes box6000-flow { from { background-position: 0% 50%; } to { background-position: 150% 50%; } }
-@keyframes box6000-in { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @keyframes box6000-shine { from { left: -60%; } to { left: 120%; } }
-.num-6000 {
-  position: relative;
-  z-index: 1;
-  font-size: 68px;
+/* 1秒間は中身を空にする */
+.vibun-box.box-6000.blank > * { visibility: hidden; }
+.vibun-box.box-6000 > p { position: relative; z-index: 1; }
+/* 6000は1500より大きい文字（配置は同じ） */
+.vibun-box.box-6000 .bonus-main {
+  font-size: 34px;
+  line-height: 1.05;
   font-weight: 900;
-  font-style: italic;
-  line-height: 1;
-  letter-spacing: -1px;
   color: #fff;
-  -webkit-text-stroke: 2px #2a1450;
-  text-shadow: 0 4px 0 rgba(42, 20, 80, 0.45), 0 0 14px rgba(255,255,255,0.8);
-  animation: num6000-beat 0.8s ease-in-out infinite;
+  text-shadow: 0 0 2px #2a1450, 0 2px 0 rgba(42, 20, 80, 0.55), 0 0 10px rgba(255,255,255,0.7);
 }
-@keyframes num6000-beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-.label-6000 {
-  position: relative;
-  z-index: 1;
-  font-size: 20px;
-  font-weight: bold;
-  letter-spacing: 4px;
-  color: #fff;
-  text-shadow: 0 0 2px #2a1450, 0 2px 0 rgba(42, 20, 80, 0.6), 0 0 8px rgba(42, 20, 80, 0.5);
-  margin-top: 2px;
-}
-.bonus-sub.sub-6000 { position: relative; z-index: 1; color: #fff; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+.vibun-box.box-6000 .bonus-sub { color: #fff; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+.vibun-box.box-6000.revealed .bonus-main { animation: box6000-pop 0.4s cubic-bezier(.2,1.6,.4,1); }
+@keyframes box6000-pop { from { transform: scale(1.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.btn-action:disabled { opacity: 0.4; cursor: not-allowed; }

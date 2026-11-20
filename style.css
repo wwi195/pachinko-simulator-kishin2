@@ -815,21 +815,26 @@ body {
 .onigakari-note.hidden-note { opacity: 0; }
 #oni-walker {
   position: fixed;
-  top: 38%;
+  top: 34%;
   left: 0;
   z-index: 55;
   pointer-events: none;
-  transform: translateX(-130px);
+  transform: translateX(-90px);
   visibility: hidden;
+  filter: drop-shadow(0 0 6px rgba(120, 100, 255, 0.7));
+  opacity: 0.92;
 }
 #oni-walker.walking {
   visibility: visible;
-  animation: oni-cross 3.2s linear forwards;
+  animation: oni-cross 3.6s linear forwards;
 }
-#oni-walker.walking .oni-body { animation: oni-bob 0.8s ease-in-out infinite; }
-#oni-walker.walking .oni-leg-front { animation: oni-step 0.8s ease-in-out infinite; transform-origin: 44px 82px; }
-#oni-walker.walking .oni-leg-back  { animation: oni-step 0.8s ease-in-out infinite reverse; transform-origin: 37px 82px; }
-#oni-walker.walking .oni-arm { animation: oni-step 0.8s ease-in-out infinite reverse; transform-origin: 53px 57px; }
-@keyframes oni-cross { from { transform: translateX(-130px); } to { transform: translateX(calc(100vw + 20px)); } }
-@keyframes oni-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-@keyframes oni-step { 0%, 100% { transform: rotate(14deg); } 50% { transform: rotate(-14deg); } }
+/* のそのそ歩き：上下動＋脚と腕を交互に振る（腰・肩を支点） */
+#oni-walker.walking .oni-body { animation: oni-bob 0.5s ease-in-out infinite; }
+#oni-walker.walking .oni-leg-front { animation: oni-swing 1s ease-in-out infinite; transform-origin: 30px 71px; transform-box: view-box; }
+#oni-walker.walking .oni-leg-back  { animation: oni-swing 1s ease-in-out -0.5s infinite; transform-origin: 30px 71px; transform-box: view-box; }
+#oni-walker.walking .oni-arm-front { animation: oni-swing-arm 1s ease-in-out -0.5s infinite; transform-origin: 30px 34px; transform-box: view-box; }
+#oni-walker.walking .oni-arm-back  { animation: oni-swing-arm 1s ease-in-out infinite; transform-origin: 30px 34px; transform-box: view-box; }
+@keyframes oni-cross { from { transform: translateX(-90px); } to { transform: translateX(calc(100vw + 20px)); } }
+@keyframes oni-bob { 0%, 100% { transform: translateY(0); } 25%, 75% { transform: translateY(-2px); } 50% { transform: translateY(0); } }
+@keyframes oni-swing { 0%, 100% { transform: rotate(18deg); } 50% { transform: rotate(-18deg); } }
+@keyframes oni-swing-arm { 0%, 100% { transform: rotate(14deg); } 50% { transform: rotate(-14deg); } }

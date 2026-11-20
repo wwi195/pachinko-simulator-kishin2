@@ -220,7 +220,7 @@ const R6_ONI_DELAY_MS = 700;
 const R6_HOLD_MS = 500;
 // 鬼がかり予告：鬼の女の子が上を見ながら左→右へのそのそ横切り、
 // 通過後に「先バレ発生！」の下へひっそり予告文を出す（歩行中は判定ボタンを押せない）
-const ONI_WALK_MS = 3200;
+const ONI_WALK_MS = 3600;
 function playOniWalk() {
   const walker = document.getElementById('oni-walker');
   const note = document.getElementById('onigakari-note');

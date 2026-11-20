@@ -811,25 +811,25 @@ body {
 .btn-action:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* ---- 鬼がかり予告 ---- */
-.onigakari-yokoku {
-  margin: 4px 0;
-  padding: 8px 18px;
-  border-radius: 10px;
-  background: linear-gradient(180deg, #2a0a0a, #5c0f0f);
-  border: 2px solid #c9a227;
-  box-shadow: 0 0 14px rgba(201, 162, 39, 0.55);
-  text-align: center;
-  animation: onigakari-in 0.45s cubic-bezier(.2,1.6,.4,1), onigakari-glow 1.2s ease-in-out 0.45s infinite;
+.onigakari-note { font-size: 11px; color: #b0342c; margin-top: 2px; letter-spacing: 0.5px; transition: opacity 0.4s; }
+.onigakari-note.hidden-note { opacity: 0; }
+#oni-walker {
+  position: fixed;
+  top: 38%;
+  left: 0;
+  z-index: 55;
+  pointer-events: none;
+  transform: translateX(-130px);
+  visibility: hidden;
 }
-.onigakari-title {
-  font-size: 26px;
-  font-weight: 900;
-  letter-spacing: 4px;
-  background: linear-gradient(180deg, #fffbe0 0%, #ffd54f 45%, #b8860b 60%, #ffe082 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+#oni-walker.walking {
+  visibility: visible;
+  animation: oni-cross 3.2s linear forwards;
 }
-.onigakari-desc { font-size: 12px; font-weight: bold; color: #ffd54f; margin-top: 2px; }
-@keyframes onigakari-in { from { transform: scale(1.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-@keyframes onigakari-glow { 50% { box-shadow: 0 0 24px rgba(255, 210, 60, 0.9); } }
+#oni-walker.walking .oni-body { animation: oni-bob 0.8s ease-in-out infinite; }
+#oni-walker.walking .oni-leg-front { animation: oni-step 0.8s ease-in-out infinite; transform-origin: 44px 82px; }
+#oni-walker.walking .oni-leg-back  { animation: oni-step 0.8s ease-in-out infinite reverse; transform-origin: 37px 82px; }
+#oni-walker.walking .oni-arm { animation: oni-step 0.8s ease-in-out infinite reverse; transform-origin: 53px 57px; }
+@keyframes oni-cross { from { transform: translateX(-130px); } to { transform: translateX(calc(100vw + 20px)); } }
+@keyframes oni-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes oni-step { 0%, 100% { transform: rotate(14deg); } 50% { transform: rotate(-14deg); } }

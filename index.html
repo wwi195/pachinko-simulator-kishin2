@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>パチンコシミュレーター（リゼロ鬼がかり2）</title>
-  <link rel="stylesheet" href="style.css?v=14">
+  <link rel="stylesheet" href="style.css?v=15">
 </head>
 <body>
   <div id="app">
@@ -117,6 +117,42 @@
       <svg id="slump-svg" viewBox="0 0 360 170" preserveAspectRatio="none"></svg>
     </div>
 
+
+    <!-- 鬼がかり予告：上を見ながら画面を横切る鬼の女の子（オリジナル） -->
+    <div id="oni-walker" aria-hidden="true">
+      <svg viewBox="0 0 80 110" width="116" height="160">
+        <g class="oni-body">
+          <!-- 脚 -->
+          <g class="oni-leg oni-leg-back"><rect x="34" y="80" width="7" height="20" rx="3" fill="#f3d2b8"/><rect x="32" y="98" width="11" height="5" rx="2" fill="#5a2b1b"/></g>
+          <g class="oni-leg oni-leg-front"><rect x="41" y="80" width="7" height="20" rx="3" fill="#f7dcc4"/><rect x="39" y="98" width="11" height="5" rx="2" fill="#6b3322"/></g>
+          <!-- 首 -->
+          <rect x="36.5" y="42" width="7" height="14" rx="2" fill="#f3d2b8"/>
+          <!-- 着物 -->
+          <path d="M27 54 Q40 48 53 54 L57 84 Q40 89 23 84 Z" fill="#c62828"/>
+          <path d="M33 54 L40 66 L47 54" fill="none" stroke="#fff" stroke-width="3"/>
+          <rect x="25" y="68" width="30" height="5" fill="#ffd54f"/>
+          <!-- 腕 -->
+          <g class="oni-arm"><rect x="50" y="56" width="7" height="18" rx="3" fill="#b71c1c" transform="rotate(-12 53 56)"/></g>
+          <!-- 頭（上を見る） -->
+          <g transform="rotate(-18 40 34)">
+            <ellipse cx="40" cy="22" rx="10" ry="8" fill="#1d1414"/>
+            <circle cx="40" cy="32" r="15" fill="#f9e0cb"/>
+            <path d="M25 30 Q26 14 40 14 Q55 14 55 30 Q50 22 40 22 Q30 22 25 30 Z" fill="#1d1414"/>
+            <path d="M25 30 Q23 42 27 48 L29 34 Z" fill="#1d1414"/>
+            <path d="M55 30 Q57 42 53 48 L51 34 Z" fill="#1d1414"/>
+            <!-- 1本角 -->
+            <path d="M38 16 L41 3 L44 16 Z" fill="#e53935" stroke="#7f0000" stroke-width="0.8"/>
+            <!-- 目（上向き） -->
+            <ellipse cx="34" cy="31" rx="2.6" ry="3.2" fill="#3b1f1f"/><circle cx="34.6" cy="29.6" r="1" fill="#fff"/>
+            <ellipse cx="46" cy="31" rx="2.6" ry="3.2" fill="#3b1f1f"/><circle cx="46.6" cy="29.6" r="1" fill="#fff"/>
+            <ellipse cx="30" cy="37" rx="2.5" ry="1.4" fill="#ff9e9e" opacity="0.7"/>
+            <ellipse cx="50" cy="37" rx="2.5" ry="1.4" fill="#ff9e9e" opacity="0.7"/>
+            <path d="M38 40 Q40 42 42 40" fill="none" stroke="#8a3b3b" stroke-width="1.2" stroke-linecap="round"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+
     <!-- 6000ボーナス：レインボー演出 -->
     <div id="rainbow-6000">
       <div class="r6-rays"></div>
@@ -138,8 +174,8 @@
     </div>
 
   </div>
-  <script src="logic.js?v=14"></script>
-  <script src="script.js?v=14"></script>
-  <script src="https://wwi195.github.io/site-analytics/tracker.js?v=5" data-site-id="pachinko-simulator-kishin2"></script>
+  <script src="logic.js?v=15"></script>
+  <script src="script.js?v=15"></script>
+  <script src="https://wwi195.github.io/site-analytics/tracker.js?v=6" data-site-id="pachinko-simulator-kishin2"></script>
 </body>
 </html>

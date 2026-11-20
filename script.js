@@ -93,6 +93,7 @@ function runNormalSpin() {
     game.pending = { type: result, interval, spentSinceLastHit, onigakari };
     addLog(`${interval}回転で先バレ発生！${onigakari ? '（鬼がかり予告）' : ''}`, onigakari ? 'rush' : '');
     setState('enzoku');
+    if (onigakari) playOniWalk();
     return true;
   }
   return false;
@@ -217,6 +218,28 @@ const R6_STAGES = ['6', '60', '600', '6000'];
 const R6_STAGE_MS = 240;
 const R6_ONI_DELAY_MS = 700;
 const R6_HOLD_MS = 500;
+// 鬼がかり予告：鬼の女の子が上を見ながら左→右へのそのそ横切り、
+// 通過後に「先バレ発生！」の下へひっそり予告文を出す（歩行中は判定ボタンを押せない）
+const ONI_WALK_MS = 3200;
+function playOniWalk() {
+  const walker = document.getElementById('oni-walker');
+  const note = document.getElementById('onigakari-note');
+  const btn = document.getElementById('enzoku-judge-btn');
+  if (!walker) return;
+  if (note) note.classList.add('hidden-note');
+  if (btn) btn.disabled = true;
+  walker.classList.remove('walking');
+  void walker.offsetWidth;
+  walker.classList.add('walking');
+  setTimeout(() => {
+    walker.classList.remove('walking');
+    const n = document.getElementById('onigakari-note');
+    const b = document.getElementById('enzoku-judge-btn');
+    if (n) n.classList.remove('hidden-note');
+    if (b) b.disabled = false;
+  }, ONI_WALK_MS);
+}
+
 // 6000ボーナス：レインボーの枠だけを1秒見せ、その後に「6000ボーナス」を表示して継続ボタンを解放
 const BOX6000_BLANK_MS = 1000;
 function reveal6000AfterBlank() {
@@ -639,14 +662,12 @@ function buildScreen(state) {
     case 'enzoku':
       return `<div class="screen">
         <p class="enzoku-label">${game.pending.interval}回転　先バレ発生！</p>
-        <p class="result-sub">前回大当たりから ${game.pending.spentSinceLastHit.toLocaleString()}円使用</p>
         ${game.pending.onigakari
-          ? `<div class="onigakari-yokoku">
-               <p class="onigakari-title">鬼がかり予告</p>
-               <p class="onigakari-desc">鬼がかり予告発生（信頼度${ONIGAKARI_CONFIDENCE}%に上昇）</p>
-             </div>`
-          : `<p class="shinraido">信頼度 ${ENZOKU_CONFIDENCE}%</p>`}
-        <button class="btn-action" onclick="handleEnzokuJudge()">▶ 判定に進む</button>
+          ? `<p class="onigakari-note" id="onigakari-note">鬼がかり予告（信頼度${ONIGAKARI_CONFIDENCE}%に上昇）</p>`
+          : ''}
+        <p class="result-sub">前回大当たりから ${game.pending.spentSinceLastHit.toLocaleString()}円使用</p>
+        ${game.pending.onigakari ? '' : `<p class="shinraido">信頼度 ${ENZOKU_CONFIDENCE}%</p>`}
+        <button class="btn-action" id="enzoku-judge-btn" onclick="handleEnzokuJudge()">▶ 判定に進む</button>
       </div>`;
 
     case 'lose_result':

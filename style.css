@@ -811,7 +811,7 @@ body {
 .btn-action:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* ---- 鬼がかり予告 ---- */
-.onigakari-note { font-size: 11px; color: #b0342c; margin-top: 2px; letter-spacing: 0.5px; transition: opacity 0.4s; }
+.onigakari-note { font-size: 20px; font-weight: bold; color: #b0342c; margin-top: 2px; letter-spacing: 1px; transition: opacity 0.4s; }
 .onigakari-note.hidden-note { opacity: 0; }
 #oni-walker {
   position: fixed;

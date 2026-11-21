@@ -1,6 +1,6 @@
 'use strict';
 
-const SPIN_RATE_OPTIONS = [14, 16, 18, 20];
+const SPIN_RATE_OPTIONS = [10, 12, 14, 16, 18, 20];
 const DEFAULT_SPIN_RATE = 16;
 
 function calcSpinCost(spinRate) {

@@ -271,29 +271,28 @@ function reveal6000AfterBlank() {
     shitazara.textContent = '下皿が満タンです';
     box.appendChild(shitazara);
   }
-  const reveal = () => {
-    if (shitazara) shitazara.remove();
-    box.classList.remove('blank');
-    box.classList.add('revealed');
-    btn.disabled = false;
-  };
-  // 下皿満タン以外のときは、6000の前に一瞬だけ別のボーナスを表示する（ガセ表示）
+  // 下皿満タン以外のときは、空白の枠に最初から別のボーナスを表示しておく（ガセ表示）
   const fake = shitazara ? null : rollFake6000Label();
-  setTimeout(() => {
-    if (!fake) { reveal(); return; }
-    const note = document.createElement('div');
+  let note = null;
+  if (fake) {
+    note = document.createElement('div');
     note.className = 'fake-6000-note';
     note.innerHTML = `<p class="bonus-main ${fake.rank}">${BONUS_LABELS[fake.type]}</p>
       <p class="bonus-sub">${fake.sub}</p>`;
     box.appendChild(note);
-    setTimeout(() => { note.remove(); reveal(); }, FAKE6000_SHOW_MS);
+  }
+  setTimeout(() => {
+    if (shitazara) shitazara.remove();
+    if (note) note.remove();
+    box.classList.remove('blank');
+    box.classList.add('revealed');
+    btn.disabled = false;
   }, BOX6000_BLANK_MS);
 }
 
-// 6000の空白枠から、一瞬だけ見せる別ボーナス。全体での割合は
+// 6000の空白枠に1秒間（下皿満タンと同じ扱いで）見せる別ボーナス。全体での割合は
 //   そのまま6000 45% ／ 1500ボーナス 30% ／ 300ボーナス 10% ／ リスタート 10% ／ 下皿満タン 5%
 // （下皿満タン以外の95%の中で抽選するため、ここでは 全体の割合 ÷ 0.95 で持つ）
-const FAKE6000_SHOW_MS = 300;
 const NOT_SHITAZARA = 1 - SHITAZARA_NOTE_RATE;
 const FAKE6000_TABLE = [
   { type: 'b300',    rate: 0.10 / NOT_SHITAZARA, rank: 'small',    sub: '＋280球獲得' },

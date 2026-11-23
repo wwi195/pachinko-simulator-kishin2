@@ -290,13 +290,15 @@ function reveal6000AfterBlank() {
   }, BOX6000_BLANK_MS);
 }
 
-// 6000の空白枠から、一瞬だけ見せる別ボーナス（下皿満タン以外の95%のうち）
-//   300ボーナス 5% ／ リスタート 5% ／ 1500ボーナス 15% ／ そのまま6000 75%
+// 6000の空白枠から、一瞬だけ見せる別ボーナス。全体での割合は
+//   そのまま6000 70% ／ 1500ボーナス 15% ／ 300ボーナス 5% ／ リスタート 5% ／ 下皿満タン 5%
+// （下皿満タン以外の95%の中で抽選するため、ここでは 全体の割合 ÷ 0.95 で持つ）
 const FAKE6000_SHOW_MS = 300;
+const NOT_SHITAZARA = 1 - SHITAZARA_NOTE_RATE;
 const FAKE6000_TABLE = [
-  { type: 'b300',    rate: 0.05, rank: 'small',    sub: '＋280球獲得' },
-  { type: 'restart', rate: 0.05, rank: 'small',    sub: `ST${RUSH_ST_COUNT}回 再セット` },
-  { type: 'b1500',   rate: 0.15, rank: 'standard', sub: '＋1,400球獲得' },
+  { type: 'b300',    rate: 0.05 / NOT_SHITAZARA, rank: 'small',    sub: '＋280球獲得' },
+  { type: 'restart', rate: 0.05 / NOT_SHITAZARA, rank: 'small',    sub: `ST${RUSH_ST_COUNT}回 再セット` },
+  { type: 'b1500',   rate: 0.15 / NOT_SHITAZARA, rank: 'standard', sub: '＋1,400球獲得' },
 ];
 function rollFake6000Label() {
   let r = Math.random();

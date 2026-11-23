@@ -271,12 +271,40 @@ function reveal6000AfterBlank() {
     shitazara.textContent = '下皿が満タンです';
     box.appendChild(shitazara);
   }
-  setTimeout(() => {
+  const reveal = () => {
     if (shitazara) shitazara.remove();
     box.classList.remove('blank');
     box.classList.add('revealed');
     btn.disabled = false;
+  };
+  // 下皿満タン以外のときは、6000の前に一瞬だけ別のボーナスを表示する（ガセ表示）
+  const fake = shitazara ? null : rollFake6000Label();
+  setTimeout(() => {
+    if (!fake) { reveal(); return; }
+    const note = document.createElement('div');
+    note.className = 'fake-6000-note';
+    note.innerHTML = `<p class="bonus-main ${fake.rank}">${BONUS_LABELS[fake.type]}</p>
+      <p class="bonus-sub">${fake.sub}</p>`;
+    box.appendChild(note);
+    setTimeout(() => { note.remove(); reveal(); }, FAKE6000_SHOW_MS);
   }, BOX6000_BLANK_MS);
+}
+
+// 6000の空白枠から、一瞬だけ見せる別ボーナス（下皿満タン以外の95%のうち）
+//   300ボーナス 5% ／ リスタート 5% ／ 1500ボーナス 15% ／ そのまま6000 75%
+const FAKE6000_SHOW_MS = 300;
+const FAKE6000_TABLE = [
+  { type: 'b300',    rate: 0.05, rank: 'small',    sub: '＋280球獲得' },
+  { type: 'restart', rate: 0.05, rank: 'small',    sub: `ST${RUSH_ST_COUNT}回 再セット` },
+  { type: 'b1500',   rate: 0.15, rank: 'standard', sub: '＋1,400球獲得' },
+];
+function rollFake6000Label() {
+  let r = Math.random();
+  for (const f of FAKE6000_TABLE) {
+    if (r < f.rate) return f;
+    r -= f.rate;
+  }
+  return null;
 }
 
 function play6000Rainbow(callback) {

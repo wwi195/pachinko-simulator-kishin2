@@ -877,3 +877,20 @@ body {
   color: #ff4fa3;
   letter-spacing: 1px;
 }
+
+/* 6000の空白枠に一瞬だけ出る別ボーナス（300／リスタート／1500） */
+.vibun-box.box-6000.blank > .fake-6000-note {
+  visibility: visible;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.vibun-box.box-6000 .fake-6000-note .bonus-main {
+  font-size: 22px; line-height: 1.2; font-weight: bold; text-shadow: none;
+}
+.vibun-box.box-6000 .fake-6000-note .bonus-main.standard { color: #1f5fd6; }
+.vibun-box.box-6000 .fake-6000-note .bonus-main.small    { color: #999; }
+.vibun-box.box-6000 .fake-6000-note .bonus-sub { color: #888; font-weight: normal; text-shadow: none; }
